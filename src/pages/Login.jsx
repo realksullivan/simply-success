@@ -14,14 +14,12 @@ export default function Login() {
     setLoading(true)
     setError(null)
     setMessage(null)
-
     if (mode === 'login') {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(error.message)
     } else {
       const { error } = await supabase.auth.signUp({
-        email,
-        password,
+        email, password,
         options: { data: { full_name: name } }
       })
       if (error) setError(error.message)
@@ -43,119 +41,120 @@ export default function Login() {
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
+    <div className="min-h-screen bg-[#08101E] flex flex-col items-center justify-center px-4 py-10">
+      <div className="w-full max-w-md">
 
         {/* Logo */}
-        <div style={styles.logo}>
-          <div style={styles.logoIcon}>S</div>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl font-black text-black"
+            style={{ background: 'linear-gradient(135deg, #C8922A, #7A5010)' }}>
+            S
+          </div>
           <div>
-            <div style={styles.logoTitle}>Simply Success</div>
-            <div style={styles.logoSub}>Your daily success system</div>
+            <div className="text-[#F4F0E8] text-lg font-bold">Simply Success</div>
+            <div className="text-[#7A91B0] text-xs">Your daily success system</div>
           </div>
         </div>
 
-        {/* Mode Toggle */}
-        <div style={styles.toggle}>
-          {['login', 'register'].map(m => (
-            <button key={m} onClick={() => { setMode(m); setError(null); setMessage(null) }}
-              style={{ ...styles.toggleBtn, ...(mode === m ? styles.toggleActive : {}) }}>
-              {m === 'login' ? 'Sign In' : 'Create Account'}
-            </button>
-          ))}
-        </div>
+        {/* Card */}
+        <div className="bg-[#0D1929] border border-[#1E3550] rounded-2xl p-6 md:p-8">
 
-        {/* Error / Success */}
-        {error && <div style={styles.error}>{error}</div>}
-        {message && <div style={styles.success}>{message}</div>}
+          {/* Toggle */}
+          <div className="flex gap-1 bg-[#132035] rounded-lg p-1 mb-6">
+            {['login', 'register'].map(m => (
+              <button key={m} onClick={() => { setMode(m); setError(null); setMessage(null) }}
+                className={`flex-1 py-2 rounded-md text-sm font-medium transition-all cursor-pointer
+                  ${mode === m
+                    ? 'bg-[#0D1929] text-[#F4F0E8] shadow font-semibold'
+                    : 'text-[#7A91B0] bg-transparent'}`}>
+                {m === 'login' ? 'Sign In' : 'Create Account'}
+              </button>
+            ))}
+          </div>
 
-        {/* Fields */}
-        <div style={styles.fields}>
-          {mode === 'register' && (
-            <div>
-              <label style={styles.label}>Full Name</label>
-              <input style={styles.input} placeholder="James Davis"
-                value={name} onChange={e => setName(e.target.value)} />
+          {/* Error / Success */}
+          {error && (
+            <div className="bg-red-900/20 border border-red-700/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-4">
+              {error}
             </div>
           )}
-          <div>
-            <label style={styles.label}>Email</label>
-            <input style={styles.input} type="email" placeholder="you@example.com"
-              value={email} onChange={e => setEmail(e.target.value)} />
-          </div>
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <label style={styles.label}>Password</label>
-              {mode === 'login' && (
-                <span style={styles.link} onClick={handleForgotPassword}>Forgot password?</span>
-              )}
+          {message && (
+            <div className="bg-green-900/20 border border-green-700/30 rounded-lg px-4 py-3 text-green-400 text-sm mb-4">
+              {message}
             </div>
-            <input style={styles.input} type="password" placeholder="••••••••"
-              value={password} onChange={e => setPassword(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSubmit()} />
+          )}
+
+          {/* Fields */}
+          <div className="flex flex-col gap-4 mb-5">
+            {mode === 'register' && (
+              <div>
+                <label className="text-[#7A91B0] text-xs block mb-1.5">Full Name</label>
+                <input
+                  className="w-full bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2.5 text-[#F4F0E8] text-sm outline-none focus:border-[#C8922A] transition-colors"
+                  placeholder="James Davis"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
+              </div>
+            )}
+            <div>
+              <label className="text-[#7A91B0] text-xs block mb-1.5">Email</label>
+              <input
+                className="w-full bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2.5 text-[#F4F0E8] text-sm outline-none focus:border-[#C8922A] transition-colors"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <div className="flex justify-between mb-1.5">
+                <label className="text-[#7A91B0] text-xs">Password</label>
+                {mode === 'login' && (
+                  <span className="text-[#C8922A] text-xs cursor-pointer" onClick={handleForgotPassword}>
+                    Forgot password?
+                  </span>
+                )}
+              </div>
+              <input
+                className="w-full bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2.5 text-[#F4F0E8] text-sm outline-none focus:border-[#C8922A] transition-colors"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+              />
+            </div>
           </div>
+
+          {/* Submit */}
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="w-full py-3 rounded-lg text-sm font-bold text-black cursor-pointer transition-opacity disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)' }}>
+            {loading ? 'Please wait...' : mode === 'login' ? 'Sign In →' : 'Create Account →'}
+          </button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-4">
+            <div className="flex-1 h-px bg-[#1E3550]" />
+            <span className="text-[#3A5070] text-xs">or continue with</span>
+            <div className="flex-1 h-px bg-[#1E3550]" />
+          </div>
+
+          {/* Google */}
+          <button
+            onClick={handleGoogle}
+            className="w-full py-2.5 rounded-lg border border-[#1E3550] text-[#7A91B0] text-sm cursor-pointer hover:border-[#2A4A72] transition-colors bg-transparent">
+            G &nbsp; Continue with Google
+          </button>
         </div>
 
-        {/* Submit */}
-        <button style={styles.btn} onClick={handleSubmit} disabled={loading}>
-          {loading ? 'Please wait...' : mode === 'login' ? 'Sign In →' : 'Create Account →'}
-        </button>
-
-        {/* Divider */}
-        <div style={styles.divider}>
-          <div style={styles.dividerLine} />
-          <span style={styles.dividerText}>or continue with</span>
-          <div style={styles.dividerLine} />
+        <div className="text-center text-[#3A5070] text-xs mt-5">
+          Encrypted · Private · Ad-free
         </div>
-
-        {/* SSO */}
-        <button style={styles.googleBtn} onClick={handleGoogle}>
-          G &nbsp; Continue with Google
-        </button>
-
       </div>
-      <div style={styles.footer}>Encrypted · Private · Ad-free</div>
     </div>
   )
-}
-
-const styles = {
-  page: { minHeight: '100vh',width: '100vw',background: '#08101E', display: 'flex', flexDirection: 'column',
-    alignItems: 'center', justifyContent: 'center', fontFamily: "'DM Sans', sans-serif",
-    padding: 20 },
-  card: { width: '100%', maxWidth: 400, background: '#0D1929', border: '1px solid #1E3550',
-    borderRadius: 16, padding: 32 },
-  logo: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 },
-  logoIcon: { width: 44, height: 44, background: 'linear-gradient(135deg, #C8922A, #7A5010)',
-    borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: 22, fontWeight: 800, color: '#0A0A0A' },
-  logoTitle: { color: '#F4F0E8', fontSize: 18, fontWeight: 700 },
-  logoSub: { color: '#7A91B0', fontSize: 12 },
-  toggle: { display: 'flex', gap: 4, background: '#132035', borderRadius: 8,
-    padding: 4, marginBottom: 24 },
-  toggleBtn: { flex: 1, padding: '8px', border: 'none', borderRadius: 6, cursor: 'pointer',
-    background: 'transparent', color: '#7A91B0', fontFamily: 'inherit', fontSize: 13,
-    fontWeight: 400, transition: 'all 0.2s' },
-  toggleActive: { background: '#0D1929', color: '#F4F0E8', fontWeight: 600,
-    boxShadow: '0 1px 4px rgba(0,0,0,0.3)' },
-  fields: { display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 },
-  label: { color: '#7A91B0', fontSize: 12, display: 'block', marginBottom: 5 },
-  input: { width: '100%', background: '#08101E', border: '1px solid #1E3550', borderRadius: 8,
-    padding: '10px 14px', color: '#F4F0E8', fontSize: 14, fontFamily: 'inherit',
-    outline: 'none', boxSizing: 'border-box' },
-  btn: { width: '100%', padding: '12px', background: 'linear-gradient(135deg, #C8922A, #A87020)',
-    border: 'none', borderRadius: 8, color: '#0A0A0A', fontSize: 14, fontWeight: 700,
-    cursor: 'pointer', fontFamily: 'inherit', marginBottom: 16 },
-  divider: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 },
-  dividerLine: { flex: 1, height: 1, background: '#1E3550' },
-  dividerText: { color: '#3A5070', fontSize: 12 },
-  googleBtn: { width: '100%', padding: '10px', background: 'transparent',
-    border: '1px solid #1E3550', borderRadius: 8, color: '#7A91B0', fontSize: 14,
-    cursor: 'pointer', fontFamily: 'inherit' },
-  error: { background: 'rgba(196,48,48,0.1)', border: '1px solid #C4303044', borderRadius: 8,
-    padding: '10px 14px', color: '#EF6060', fontSize: 13, marginBottom: 16 },
-  success: { background: 'rgba(26,138,90,0.12)', border: '1px solid #1A8A5A44', borderRadius: 8,
-    padding: '10px 14px', color: '#34D399', fontSize: 13, marginBottom: 16 },
-  link: { color: '#C8922A', fontSize: 12, cursor: 'pointer' },
-  footer: { color: '#3A5070', fontSize: 12, marginTop: 20 }
 }
