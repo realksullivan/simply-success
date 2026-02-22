@@ -120,7 +120,7 @@ export default function Login() {
 }
 
 const styles = {
-  page: { minHeight: '100vh', background: '#08101E', display: 'flex', flexDirection: 'column',
+  page: { minHeight: '100vh',width: '100vw',background: '#08101E', display: 'flex', flexDirection: 'column',
     alignItems: 'center', justifyContent: 'center', fontFamily: "'DM Sans', sans-serif",
     padding: 20 },
   card: { width: '100%', maxWidth: 400, background: '#0D1929', border: '1px solid #1E3550',
