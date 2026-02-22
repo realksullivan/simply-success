@@ -35,6 +35,7 @@ export default function Today() {
   )
 
   return (
+    
     <div className="min-h-screen bg-[#08101E] px-4 py-8 md:px-9 font-sans">
 
       {/* Header */}
@@ -51,13 +52,23 @@ export default function Today() {
           Sign Out
         </button>
       </div>
-
+      <div className="flex gap-3 mb-6">
+  {[
+    { label: 'Today', path: '/' },
+    { label: 'Goals', path: '/goals' },
+  ].map(n => (
+    <a key={n.path} href={n.path}
+      className="text-xs px-3 py-1.5 rounded-md border border-[#1E3550] text-[#7A91B0] hover:border-[#C8922A] hover:text-[#C8922A] transition-colors">
+      {n.label}
+    </a>
+  ))}
+</div>
       {/* Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-5">
 
         {/* Left Column */}
         <div className="flex flex-col gap-4">
-
+/
           {/* Focus Hour */}
           <div className="bg-[#0D1929] border border-[#1E3550] rounded-xl p-5">
             <div className="text-[#C8922A] text-xs font-bold tracking-widest uppercase mb-3">

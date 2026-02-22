@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import Login from './pages/Login'
 import Today from './pages/Today'
+import Goals from './pages/Goals'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -38,7 +39,11 @@ export default function App() {
         <Route path="/" element={
           session ? <Today /> : <Navigate to="/login" />
         } />
-      </Routes>
+      
+      <Route path="/goals" element={
+        session ? <Goals /> : <Navigate to="/login" />
+        } />
+        </Routes>
     </BrowserRouter>
   )
 }
