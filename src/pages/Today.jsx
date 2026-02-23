@@ -33,10 +33,7 @@ export default function Today() {
     setNewTask('')
   }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-  }
-
+ 
   if (loading) return (
     <div className="min-h-screen bg-[#08101E] flex items-center justify-center">
       <div className="text-[#C8922A] text-base">Loading your day...</div>
@@ -48,26 +45,19 @@ export default function Today() {
     <div className="min-h-screen bg-[#08101E] px-4 py-8 md:px-9 font-sans">
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-8">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
         <div>
           <div className="text-[#7A91B0] text-sm mb-1">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </div>
           <div className="text-[#F4F0E8] text-2xl md:text-3xl font-bold">Today's Checklist</div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="self-start md:self-auto bg-transparent border border-[#1E3550] rounded-lg text-[#7A91B0] text-xs px-3 py-1.5 cursor-pointer">
-          Sign Out
-        </button>
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-5">
-
+      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-5 items-start"> 
         {/* Left Column */}
         <div className="flex flex-col gap-4">
-/
           {/* Focus Hour */}
           <div className="bg-[#0D1929] border border-[#1E3550] rounded-xl p-5">
             <div className="text-[#C8922A] text-xs font-bold tracking-widest uppercase mb-3">
