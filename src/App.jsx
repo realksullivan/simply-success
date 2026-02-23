@@ -6,6 +6,7 @@ import Today from './pages/Today'
 import Goals from './pages/Goals'
 import Projects from './pages/Projects'
 import Reflection from './pages/Reflection'
+import Analytics from './pages/Analytics'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -49,6 +50,9 @@ export default function App() {
         } />
         <Route path="/reflection" element={
           session ? <Reflection /> : <Navigate to="/login" />
+        } />
+        <Route path="/analytics" element={
+          session ? <Analytics /> : <Navigate to="/login" />
         } />
         </Routes>
     </BrowserRouter>
