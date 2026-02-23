@@ -3,15 +3,24 @@ import { supabase } from '../lib/supabase'
 import { useChecklist } from '../hooks/useChecklist'
 
 export default function Today() {
-  const { checklist, tasks, habits, habitLogs, loading, toggleTask, addTask, toggleHabit, winTheDay } = useChecklist()
+  const { checklist, tasks, habits, habitLogs, projects, loading, toggleTask, addTask, toggleHabit, winTheDay } = useChecklist()
   const [newTask, setNewTask] = useState('')
   const [newFocus, setNewFocus] = useState('')
+  const [newProjectTask, setNewProjectTask] = useState('')
+  const [selectedProject, setSelectedProject] = useState('')
 
   const focusTask = tasks.find(t => t.type === 'focus')
   const projectTasks = tasks.filter(t => t.type === 'project')
   const otherTasks = tasks.filter(t => t.type === 'other')
   const focusDone = focusTask?.is_done
 
+  const handleAddProjectTask = async () => {
+    if (!newProjectTask.trim()) return
+    await addTask(newProjectTask.trim(), 'project', selectedProject || null)
+    setNewProjectTask('')
+    setSelectedProject('')
+  }
+  
   const handleAddFocus = async () => {
     if (!newFocus.trim()) return
     await addTask(newFocus.trim(), 'focus')
@@ -92,21 +101,63 @@ export default function Today() {
 
           {/* Project Tasks */}
           <div className="bg-[#0D1929] border border-[#1E3550] rounded-xl p-5">
-            <div className="text-[#C8922A] text-xs font-bold tracking-widest uppercase mb-3">
-              ◆ Project Tasks
-            </div>
-            {projectTasks.length === 0 && (
-              <div className="text-[#3A5070] text-sm italic py-2">No project tasks yet</div>
-            )}
-            {projectTasks.map((t, i) => (
-              <div key={t.id} className={`flex items-start gap-3 py-2 ${i < projectTasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
-                <Checkbox checked={t.is_done} onChange={() => toggleTask(t.id, t.is_done)} />
-                <div>
-                  <div className={`text-sm ${t.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>{t.title}</div>
-                  {t.projects && <div className="text-[#3A5070] text-xs mt-0.5">↳ {t.projects.title}</div>}
-                </div>
-              </div>
-            ))}
+  <div className="flex items-center justify-between mb-3">
+    <div className="text-[#C8922A] text-xs font-bold tracking-widest uppercase">
+      ◆ Project Tasks
+    </div>
+    <span className="text-[#3A5070] text-xs">{projectTasks.length}/3</span>
+  </div>
+
+  {projectTasks.length === 0 && (
+    <div className="text-[#3A5070] text-sm italic py-2">No project tasks yet</div>
+  )}
+
+  {projectTasks.map((t, i) => (
+    <div key={t.id} className={`flex items-start gap-3 py-2 ${i < projectTasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
+      <Checkbox checked={t.is_done} onChange={() => toggleTask(t.id, t.is_done)} />
+      <div>
+        <div className={`text-sm ${t.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>
+          {t.title}
+        </div>
+        {t.projects && (
+          <div className="text-[#3A5070] text-xs mt-0.5">↳ {t.projects.title}</div>
+        )}
+      </div>
+    </div>
+  ))}
+
+  {/* Add project task — only show if under 3 */}
+  {projectTasks.length < 3 && (
+    <div className="mt-3 pt-3 border-t border-[#1E3550] flex flex-col gap-2">
+      <input
+        className="w-full bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2 text-[#F4F0E8] text-sm outline-none focus:border-[#C8922A] transition-colors"
+        placeholder="Add a project task..."
+        value={newProjectTask}
+        onChange={e => setNewProjectTask(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && handleAddProjectTask()}
+      />
+      <div className="flex gap-2">
+        <select
+          className="flex-1 bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#C8922A] transition-colors"
+          style={{ color: selectedProject ? '#F4F0E8' : '#3A5070' }}
+          value={selectedProject}
+          onChange={e => setSelectedProject(e.target.value)}>
+          <option value="">Link to project (optional)</option>
+          {projects.map(p => (
+            <option key={p.id} value={p.id}>{p.title}</option>
+          ))}
+        </select>
+        {newProjectTask && (
+          <button
+            onClick={handleAddProjectTask}
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-black cursor-pointer flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)' }}>
+            Add
+          </button>
+        )}
+      </div>
+    </div>
+  )}
           </div>
 
           {/* Other Tasks */}

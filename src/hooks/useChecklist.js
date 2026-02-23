@@ -7,7 +7,7 @@ export function useChecklist() {
   const [habits, setHabits] = useState([])
   const [habitLogs, setHabitLogs] = useState([])
   const [loading, setLoading] = useState(true)
-
+  const [projects, setProjects] = useState([])
   const today = new Date().toISOString().split('T')[0]
 
   useEffect(() => {
@@ -53,6 +53,16 @@ export function useChecklist() {
       .order('sort_order')
 
     setHabits(habitData || [])
+
+    // Load active projects
+    const { data: projectData } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('user_id', user.id)
+      .is('completed_at', null)
+      .order('created_at')
+
+    setProjects(projectData || [])
 
     // Load habit logs for today
     const { data: logData } = await supabase
@@ -117,8 +127,8 @@ export function useChecklist() {
     setChecklist(prev => ({ ...prev, won_the_day: true }))
   }
 
-  return {
-    checklist, tasks, habits, habitLogs,
-    loading, toggleTask, addTask, toggleHabit, winTheDay
-  }
+ return {
+  checklist, tasks, habits, habitLogs, projects,
+  loading, toggleTask, addTask, toggleHabit, winTheDay
+}
 }
