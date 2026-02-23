@@ -4,6 +4,7 @@ import { supabase } from './lib/supabase'
 import Login from './pages/Login'
 import Today from './pages/Today'
 import Goals from './pages/Goals'
+import Projects from './pages/Projects'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -39,9 +40,11 @@ export default function App() {
         <Route path="/" element={
           session ? <Today /> : <Navigate to="/login" />
         } />
-      
-      <Route path="/goals" element={
-        session ? <Goals /> : <Navigate to="/login" />
+        <Route path="/projects" element={
+          session ? <Projects /> : <Navigate to="/login" />
+        } />
+        <Route path="/goals" element={
+          session ? <Goals /> : <Navigate to="/login" />
         } />
         </Routes>
     </BrowserRouter>
