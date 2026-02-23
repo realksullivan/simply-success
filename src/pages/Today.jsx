@@ -59,6 +59,7 @@ export default function Today() {
     { label: 'Projects',   path: '/projects' },
     { label: 'Reflection', path: '/reflection' },
     { label: 'Analytics',  path: '/analytics' },
+    { label: 'Settings',   path: '/settings' },
   ].map(n => (
     <a key={n.path} href={n.path}
       className="text-xs px-3 py-1.5 rounded-md border border-[#1E3550] text-[#7A91B0] hover:border-[#C8922A] hover:text-[#C8922A] transition-colors">
