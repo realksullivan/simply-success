@@ -8,9 +8,13 @@ export function useChecklist() {
   const [habitLogs, setHabitLogs] = useState([])
   const [projects, setProjects] = useState([])
   const [projectBacklog, setProjectBacklog] = useState([])
+  const [rolloverTasks, setRolloverTasks] = useState([])
   const [loading, setLoading] = useState(true)
 
   const today = new Date().toISOString().split('T')[0]
+  const yesterdayDate = new Date()
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+  const yesterday = yesterdayDate.toISOString().split('T')[0]
 
   useEffect(() => {
     initChecklist()
@@ -74,7 +78,7 @@ export function useChecklist() {
 
     setProjects(projectData || [])
 
-    // Load project task backlog (undone tasks from all active projects)
+    // Load project backlog
     const projectIds = (projectData || []).map(p => p.id)
     if (projectIds.length > 0) {
       const { data: backlog } = await supabase
@@ -83,10 +87,34 @@ export function useChecklist() {
         .in('project_id', projectIds)
         .eq('is_done', false)
         .order('sort_order')
-
       setProjectBacklog(backlog || [])
     } else {
       setProjectBacklog([])
+    }
+
+    // Check yesterday for incomplete tasks
+    const { data: yesterdayChecklist } = await supabase
+      .from('checklists')
+      .select('*')
+      .eq('date', yesterday)
+      .eq('user_id', user.id)
+      .single()
+
+    if (yesterdayChecklist) {
+      const { data: yesterdayTasks } = await supabase
+        .from('tasks')
+        .select('*, projects(title)')
+        .eq('checklist_id', yesterdayChecklist.id)
+        .eq('is_done', false)
+
+      // Only suggest other + project tasks, not focus
+      const incomplete = (yesterdayTasks || []).filter(t => t.type !== 'focus')
+
+      // Filter out tasks already rolled over to today
+      const todayTitles = (taskData || []).map(t => t.title)
+      const notYetRolled = incomplete.filter(t => !todayTitles.includes(t.title))
+
+      setRolloverTasks(notYetRolled)
     }
 
     setLoading(false)
@@ -117,6 +145,23 @@ export function useChecklist() {
       .single()
 
     setTasks(prev => [...prev, data])
+    return data
+  }
+
+  const rolloverSingle = async (task) => {
+    await addTask(task.title, task.type, task.project_id)
+    setRolloverTasks(prev => prev.filter(t => t.id !== task.id))
+  }
+
+  const rolloverAll = async () => {
+    for (const task of rolloverTasks) {
+      await addTask(task.title, task.type, task.project_id)
+    }
+    setRolloverTasks([])
+  }
+
+  const dismissRollover = () => {
+    setRolloverTasks([])
   }
 
   const toggleHabit = async (habitId, currentDone) => {
@@ -153,6 +198,8 @@ export function useChecklist() {
 
   return {
     checklist, tasks, habits, habitLogs, projects, projectBacklog,
-    loading, toggleTask, addTask, toggleHabit, winTheDay
+    rolloverTasks, loading,
+    toggleTask, addTask, toggleHabit, winTheDay,
+    rolloverSingle, rolloverAll, dismissRollover
   }
 }

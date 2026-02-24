@@ -4,7 +4,9 @@ import { useChecklist } from '../hooks/useChecklist'
 export default function Today() {
   const {
     checklist, tasks, habits, habitLogs, projectBacklog,
-    loading, toggleTask, addTask, toggleHabit, winTheDay
+    rolloverTasks, loading,
+    toggleTask, addTask, toggleHabit, winTheDay,
+    rolloverSingle, rolloverAll, dismissRollover
   } = useChecklist()
 
   const [newTask, setNewTask] = useState('')
@@ -52,6 +54,54 @@ export default function Today() {
         </div>
         <div className="text-[#F4F0E8] text-2xl md:text-3xl font-bold">Today's Checklist</div>
       </div>
+
+      {/* Rollover Banner */}
+      {rolloverTasks.length > 0 && (
+        <div className="mb-5 bg-[#0D1929] border border-[#C8922A]/40 rounded-xl p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <div className="text-[#C8922A] text-xs font-bold tracking-widest uppercase">
+                ↩ From Yesterday
+              </div>
+              <div className="text-[#7A91B0] text-xs mt-0.5">
+                {rolloverTasks.length} incomplete task{rolloverTasks.length !== 1 ? 's' : ''} — roll them over?
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={rolloverAll}
+                className="text-xs px-3 py-1.5 rounded-md text-black font-semibold cursor-pointer"
+                style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)' }}>
+                Add All
+              </button>
+              <button
+                onClick={dismissRollover}
+                className="text-xs px-3 py-1.5 rounded-md border border-[#1E3550] text-[#7A91B0] bg-transparent cursor-pointer">
+                Dismiss
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            {rolloverTasks.map(task => (
+              <div key={task.id}
+                className="flex items-center justify-between py-1.5 px-3 bg-[#08101E] rounded-lg">
+                <div>
+                  <div className="text-[#F4F0E8] text-xs">{task.title}</div>
+                  {task.projects && (
+                    <div className="text-[#3A5070] text-xs">↳ {task.projects.title}</div>
+                  )}
+                </div>
+                <button
+                  onClick={() => rolloverSingle(task)}
+                  className="text-[#C8922A] text-xs border border-[#C8922A]/40 px-2 py-1 rounded cursor-pointer bg-transparent hover:bg-[#C8922A]/10 transition-colors ml-3 shrink-0">
+                  + Add
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-5 items-start">
@@ -108,7 +158,6 @@ export default function Today() {
               </div>
             )}
 
-            {/* Today's selected project tasks */}
             {projectTasks.map((t, i) => (
               <div key={t.id}
                 className={`flex items-start gap-3 py-2 ${i < projectTasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
@@ -127,12 +176,9 @@ export default function Today() {
               </div>
             ))}
 
-            {/* Backlog picker — only show if under 3 and backlog exists */}
             {projectTasks.length < 3 && projectBacklog.length > 0 && (
               <div className="mt-3 pt-3 border-t border-[#1E3550]">
-                <div className="text-[#3A5070] text-xs mb-2">
-                  Pick from your project backlog:
-                </div>
+                <div className="text-[#3A5070] text-xs mb-2">Pick from your project backlog:</div>
                 <div className="flex gap-2">
                   <select
                     className="flex-1 bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#C8922A] transition-colors"
