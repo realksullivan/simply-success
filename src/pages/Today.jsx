@@ -5,7 +5,7 @@ export default function Today() {
   const {
     checklist, tasks, habits, habitLogs, projectBacklog,
     rolloverTasks, loading,
-    toggleTask, addTask, toggleHabit, winTheDay,
+    toggleTask, removeTask, addTask, toggleHabit, winTheDay,
     rolloverSingle, rolloverAll, dismissRollover
   } = useChecklist()
 
@@ -39,8 +39,8 @@ export default function Today() {
   }
 
   if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="text-[#C8922A] text-base">Loading your day...</div>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 256 }}>
+      <div style={{ color: '#C8922A', fontSize: 14 }}>Loading your day...</div>
     </div>
   )
 
@@ -115,14 +115,19 @@ export default function Today() {
               ⬡ Focus Hour
             </div>
             {focusTask ? (
-              <div className="flex items-center gap-3 bg-[#0F2A50] rounded-lg px-4 py-3 border-l-4 border-[#C8922A]">
+              <div className="flex items-center gap-3 bg-[#0F2A50] rounded-lg px-4 py-3 border-l-4 border-[#C8922A] group">
                 <Checkbox
                   checked={focusTask.is_done}
                   onChange={() => toggleTask(focusTask.id, focusTask.is_done)}
                 />
-                <span className={`text-sm font-medium ${focusTask.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>
+                <span className={`text-sm font-medium flex-1 ${focusTask.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>
                   {focusTask.title}
                 </span>
+                <button
+                  onClick={() => removeTask(focusTask.id)}
+                  className="text-[#3A5070] hover:text-red-400 text-xs cursor-pointer bg-transparent border-none transition-colors opacity-0 group-hover:opacity-100">
+                  ✕
+                </button>
               </div>
             ) : (
               <div className="flex gap-2 items-center">
@@ -149,7 +154,10 @@ export default function Today() {
               <div className="text-[#C8922A] text-xs font-bold tracking-widest uppercase">
                 ◆ Project Tasks
               </div>
-              <span className="text-[#3A5070] text-xs">{projectTasks.length}/3</span>
+              <span className={`text-xs ${projectTasks.length > 3 ? 'text-[#C8922A]' : 'text-[#3A5070]'}`}>
+                {projectTasks.length} task{projectTasks.length !== 1 ? 's' : ''}
+                {projectTasks.length > 3 ? ' — consider trimming' : ''}
+              </span>
             </div>
 
             {projectTasks.length === 0 && projectBacklog.length === 0 && (
@@ -160,12 +168,12 @@ export default function Today() {
 
             {projectTasks.map((t, i) => (
               <div key={t.id}
-                className={`flex items-start gap-3 py-2 ${i < projectTasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
+                className={`flex items-start gap-3 py-2 group ${i < projectTasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
                 <Checkbox
                   checked={t.is_done}
                   onChange={() => toggleTask(t.id, t.is_done)}
                 />
-                <div>
+                <div className="flex-1">
                   <div className={`text-sm ${t.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>
                     {t.title}
                   </div>
@@ -173,10 +181,16 @@ export default function Today() {
                     <div className="text-[#3A5070] text-xs mt-0.5">↳ {t.projects.title}</div>
                   )}
                 </div>
+                <button
+                  onClick={() => removeTask(t.id)}
+                  className="text-[#3A5070] hover:text-red-400 text-xs cursor-pointer bg-transparent border-none transition-colors opacity-0 group-hover:opacity-100 shrink-0 mt-0.5">
+                  ✕
+                </button>
               </div>
             ))}
 
-            {projectTasks.length < 3 && projectBacklog.length > 0 && (
+            {/* Backlog picker */}
+            {projectBacklog.length > 0 && (
               <div className="mt-3 pt-3 border-t border-[#1E3550]">
                 <div className="text-[#3A5070] text-xs mb-2">Pick from your project backlog:</div>
                 <div className="flex gap-2">
@@ -215,14 +229,19 @@ export default function Today() {
             )}
             {otherTasks.map((t, i) => (
               <div key={t.id}
-                className={`flex items-center gap-3 py-2 ${i < otherTasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
+                className={`flex items-center gap-3 py-2 group ${i < otherTasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
                 <Checkbox
                   checked={t.is_done}
                   onChange={() => toggleTask(t.id, t.is_done)}
                 />
-                <span className={`text-sm ${t.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>
+                <span className={`text-sm flex-1 ${t.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>
                   {t.title}
                 </span>
+                <button
+                  onClick={() => removeTask(t.id)}
+                  className="text-[#3A5070] hover:text-red-400 text-xs cursor-pointer bg-transparent border-none transition-colors opacity-0 group-hover:opacity-100 shrink-0">
+                  ✕
+                </button>
               </div>
             ))}
             <div className="flex gap-2 items-center mt-3">

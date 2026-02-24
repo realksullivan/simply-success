@@ -130,6 +130,10 @@ export function useChecklist() {
       t.id === taskId ? { ...t, is_done: !currentDone } : t
     ))
   }
+  const removeTask = async (taskId) => {
+  await supabase.from('tasks').delete().eq('id', taskId)
+  setTasks(prev => prev.filter(t => t.id !== taskId))
+}
 
   const addTask = async (title, type = 'other', projectId = null) => {
     const { data } = await supabase
@@ -197,9 +201,9 @@ export function useChecklist() {
   }
 
   return {
-    checklist, tasks, habits, habitLogs, projects, projectBacklog,
-    rolloverTasks, loading,
-    toggleTask, addTask, toggleHabit, winTheDay,
-    rolloverSingle, rolloverAll, dismissRollover
-  }
+  checklist, tasks, habits, habitLogs, projects, projectBacklog,
+  rolloverTasks, loading,
+  toggleTask, removeTask, addTask, toggleHabit, winTheDay,
+  rolloverSingle, rolloverAll, dismissRollover
+}
 }
