@@ -11,7 +11,7 @@ const NAV = [
   { path: '/settings',   icon: '⊕', label: 'Settings' },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ open, onClose, isMobile }) {
   const location = useLocation()
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
@@ -21,6 +21,11 @@ export default function Sidebar() {
     fetchUser()
     fetchStreak()
   }, [])
+
+  // Close sidebar on route change on mobile
+  useEffect(() => {
+    onClose?.()
+  }, [location.pathname])
 
   const fetchUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -55,8 +60,8 @@ export default function Sidebar() {
 
   const today = new Date()
 
-  return (
-    <div className="w-52 min-h-screen bg-[#0D1929] border-r border-[#1E3550] flex flex-col flex-shrink-0">
+  const sidebarContent = (
+    <div className="w-52 h-full bg-[#0D1929] border-r border-[#1E3550] flex flex-col">
 
       {/* Logo */}
       <div className="px-5 py-6 border-b border-[#1E3550]">
@@ -132,5 +137,43 @@ export default function Sidebar() {
         </div>
       </div>
     </div>
+  )
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      {!isMobile && (
+        <div style={{ width: 208, minHeight: '100vh', position: 'sticky', top: 0, flexShrink: 0 }}>
+          {sidebarContent}
+        </div>
+      )}
+
+      {/* Mobile overlay */}
+      {isMobile && open && (
+        <>
+          <div
+            onClick={onClose}
+            style={{
+              position: 'fixed', inset: 0,
+              background: 'rgba(0,0,0,0.6)', zIndex: 40
+            }}
+          />
+          <div style={{
+            position: 'fixed', top: 0, left: 0,
+            height: '100%', zIndex: 50,
+            animation: 'slideIn 0.25s ease'
+          }}>
+            {sidebarContent}
+          </div>
+        </>
+      )}
+
+      <style>{`
+        @keyframes slideIn {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+      `}</style>
+    </>
   )
 }
