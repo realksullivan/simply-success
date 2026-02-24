@@ -9,6 +9,7 @@ import Projects from './pages/Projects'
 import Reflection from './pages/Reflection'
 import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
+import Landing from './pages/Landing'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -34,16 +35,16 @@ export default function App() {
     : <Navigate to="/login" />
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={session ? <Navigate to="/" /> : <Login />} />
-        <Route path="/"           element={protect(<Today />)} />
-        <Route path="/goals"      element={protect(<Goals />)} />
-        <Route path="/projects"   element={protect(<Projects />)} />
-        <Route path="/reflection" element={protect(<Reflection />)} />
-        <Route path="/analytics"  element={protect(<Analytics />)} />
-        <Route path="/settings"   element={protect(<Settings />)} />
-      </Routes>
-    </BrowserRouter>
-  )
+  <BrowserRouter>
+    <Routes>
+      <Route path="/login" element={session ? <Navigate to="/" /> : <Login />} />
+      <Route path="/" element={session ? <AppShell><Today /></AppShell> : <Landing />} />
+      <Route path="/goals"      element={protect(<Goals />)} />
+      <Route path="/projects"   element={protect(<Projects />)} />
+      <Route path="/reflection" element={protect(<Reflection />)} />
+      <Route path="/analytics"  element={protect(<Analytics />)} />
+      <Route path="/settings"   element={protect(<Settings />)} />
+    </Routes>
+  </BrowserRouter>
+)
 }
