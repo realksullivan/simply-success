@@ -6,8 +6,10 @@ export function useChecklist() {
   const [tasks, setTasks] = useState([])
   const [habits, setHabits] = useState([])
   const [habitLogs, setHabitLogs] = useState([])
-  const [loading, setLoading] = useState(true)
   const [projects, setProjects] = useState([])
+  const [projectBacklog, setProjectBacklog] = useState([])
+  const [loading, setLoading] = useState(true)
+
   const today = new Date().toISOString().split('T')[0]
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export function useChecklist() {
 
     setChecklist(existing)
 
-    // Load tasks
+    // Load today's tasks
     const { data: taskData } = await supabase
       .from('tasks')
       .select('*, projects(title)')
@@ -54,6 +56,14 @@ export function useChecklist() {
 
     setHabits(habitData || [])
 
+    // Load habit logs for today
+    const { data: logData } = await supabase
+      .from('habit_logs')
+      .select('*')
+      .eq('checklist_id', existing.id)
+
+    setHabitLogs(logData || [])
+
     // Load active projects
     const { data: projectData } = await supabase
       .from('projects')
@@ -64,13 +74,21 @@ export function useChecklist() {
 
     setProjects(projectData || [])
 
-    // Load habit logs for today
-    const { data: logData } = await supabase
-      .from('habit_logs')
-      .select('*')
-      .eq('checklist_id', existing.id)
+    // Load project task backlog (undone tasks from all active projects)
+    const projectIds = (projectData || []).map(p => p.id)
+    if (projectIds.length > 0) {
+      const { data: backlog } = await supabase
+        .from('project_tasks')
+        .select('*, projects(title)')
+        .in('project_id', projectIds)
+        .eq('is_done', false)
+        .order('sort_order')
 
-    setHabitLogs(logData || [])
+      setProjectBacklog(backlog || [])
+    } else {
+      setProjectBacklog([])
+    }
+
     setLoading(false)
   }
 
@@ -88,7 +106,13 @@ export function useChecklist() {
   const addTask = async (title, type = 'other', projectId = null) => {
     const { data } = await supabase
       .from('tasks')
-      .insert({ checklist_id: checklist.id, title, type, project_id: projectId, sort_order: tasks.length })
+      .insert({
+        checklist_id: checklist.id,
+        title,
+        type,
+        project_id: projectId,
+        sort_order: tasks.length
+      })
       .select('*, projects(title)')
       .single()
 
@@ -127,8 +151,8 @@ export function useChecklist() {
     setChecklist(prev => ({ ...prev, won_the_day: true }))
   }
 
- return {
-  checklist, tasks, habits, habitLogs, projects,
-  loading, toggleTask, addTask, toggleHabit, winTheDay
-}
+  return {
+    checklist, tasks, habits, habitLogs, projects, projectBacklog,
+    loading, toggleTask, addTask, toggleHabit, winTheDay
+  }
 }
