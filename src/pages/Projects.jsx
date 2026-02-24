@@ -71,21 +71,33 @@ export default function Projects() {
   }
 
   const toggleProjectTask = async (projectId, taskId, currentDone) => {
-    await supabase
-      .from('project_tasks')
-      .update({ is_done: !currentDone, completed_at: !currentDone ? new Date() : null })
-      .eq('id', taskId)
-    setProjects(prev => prev.map(p =>
-      p.id === projectId
-        ? {
-            ...p,
-            project_tasks: p.project_tasks.map(t =>
-              t.id === taskId ? { ...t, is_done: !currentDone } : t
-            )
-          }
-        : p
-    ))
-  }
+  await supabase
+    .from('project_tasks')
+    .update({ is_done: !currentDone, completed_at: !currentDone ? new Date() : null })
+    .eq('id', taskId)
+
+  // Update local state
+  const updatedProjects = projects.map(p => {
+    if (p.id !== projectId) return p
+    const updatedTasks = p.project_tasks.map(t =>
+      t.id === taskId ? { ...t, is_done: !currentDone } : t
+    )
+    // Recalculate progress
+    const done = updatedTasks.filter(t => t.is_done).length
+    const total = updatedTasks.length
+    const newProgress = total > 0 ? Math.round((done / total) * 100) : 0
+
+    // Persist progress to database
+    supabase
+      .from('projects')
+      .update({ progress: newProgress })
+      .eq('id', projectId)
+
+    return { ...p, project_tasks: updatedTasks, progress: newProgress }
+  })
+
+  setProjects(updatedProjects)
+}
 
   const deleteProjectTask = async (projectId, taskId) => {
     await supabase.from('project_tasks').delete().eq('id', taskId)
