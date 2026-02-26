@@ -11,10 +11,12 @@ export function useChecklist() {
   const [rolloverTasks, setRolloverTasks] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const today = new Date().toISOString().split('T')[0]
-  const yesterdayDate = new Date()
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1)
-  const yesterday = yesterdayDate.toISOString().split('T')[0]
+  const today = new Date()
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
 
   useEffect(() => {
     initChecklist()
@@ -27,14 +29,14 @@ export function useChecklist() {
     let { data: existing } = await supabase
       .from('checklists')
       .select('*')
-      .eq('date', today)
+      .eq('date', todayStr)
       .eq('user_id', user.id)
       .single()
 
     if (!existing) {
       const { data: created } = await supabase
         .from('checklists')
-        .insert({ user_id: user.id, date: today })
+        .insert({ user_id: user.id, date: todayStr })
         .select()
         .single()
       existing = created
@@ -93,28 +95,33 @@ export function useChecklist() {
     }
 
     // Check yesterday for incomplete tasks
-    const { data: yesterdayChecklist } = await supabase
-      .from('checklists')
-      .select('*')
-      .eq('date', yesterday)
-      .eq('user_id', user.id)
-      .single()
+    // Only show if not already dismissed today
+    const alreadyDismissed = localStorage.getItem(`rollover_dismissed_${todayStr}`)
 
-    if (yesterdayChecklist) {
-      const { data: yesterdayTasks } = await supabase
-        .from('tasks')
-        .select('*, projects(title)')
-        .eq('checklist_id', yesterdayChecklist.id)
-        .eq('is_done', false)
+    if (!alreadyDismissed) {
+      const { data: yesterdayChecklist } = await supabase
+        .from('checklists')
+        .select('*')
+        .eq('date', yesterdayStr)
+        .eq('user_id', user.id)
+        .single()
 
-      // Only suggest other + project tasks, not focus
-      const incomplete = (yesterdayTasks || []).filter(t => t.type !== 'focus')
+      if (yesterdayChecklist) {
+        const { data: yesterdayTasks } = await supabase
+          .from('tasks')
+          .select('*, projects(title)')
+          .eq('checklist_id', yesterdayChecklist.id)
+          .eq('is_done', false)
 
-      // Filter out tasks already rolled over to today
-      const todayTitles = (taskData || []).map(t => t.title)
-      const notYetRolled = incomplete.filter(t => !todayTitles.includes(t.title))
+        // Only suggest other + project tasks, not focus
+        const incomplete = (yesterdayTasks || []).filter(t => t.type !== 'focus')
 
-      setRolloverTasks(notYetRolled)
+        // Filter out tasks already rolled over to today
+        const todayTitles = (taskData || []).map(t => t.title)
+        const notYetRolled = incomplete.filter(t => !todayTitles.includes(t.title))
+
+        setRolloverTasks(notYetRolled)
+      }
     }
 
     setLoading(false)
@@ -130,10 +137,11 @@ export function useChecklist() {
       t.id === taskId ? { ...t, is_done: !currentDone } : t
     ))
   }
+
   const removeTask = async (taskId) => {
-  await supabase.from('tasks').delete().eq('id', taskId)
-  setTasks(prev => prev.filter(t => t.id !== taskId))
-}
+    await supabase.from('tasks').delete().eq('id', taskId)
+    setTasks(prev => prev.filter(t => t.id !== taskId))
+  }
 
   const addTask = async (title, type = 'other', projectId = null) => {
     const { data } = await supabase
@@ -161,10 +169,12 @@ export function useChecklist() {
     for (const task of rolloverTasks) {
       await addTask(task.title, task.type, task.project_id)
     }
+    localStorage.setItem(`rollover_dismissed_${todayStr}`, 'true')
     setRolloverTasks([])
   }
 
   const dismissRollover = () => {
+    localStorage.setItem(`rollover_dismissed_${todayStr}`, 'true')
     setRolloverTasks([])
   }
 
@@ -201,9 +211,9 @@ export function useChecklist() {
   }
 
   return {
-  checklist, tasks, habits, habitLogs, projects, projectBacklog,
-  rolloverTasks, loading,
-  toggleTask, removeTask, addTask, toggleHabit, winTheDay,
-  rolloverSingle, rolloverAll, dismissRollover
-}
+    checklist, tasks, habits, habitLogs, projects, projectBacklog,
+    rolloverTasks, loading,
+    toggleTask, removeTask, addTask, toggleHabit, winTheDay,
+    rolloverSingle, rolloverAll, dismissRollover
+  }
 }

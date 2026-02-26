@@ -271,12 +271,11 @@ async function seed() {
     .in('project_id', projectData.map(p => p.id))
 
   for (let i = 89; i >= 0; i--) {
-    const date = new Date()
-    date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split('T')[0]
-
+      const date = new Date()
+      date.setDate(date.getDate() - i)
+      const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     // Skip ~15% of days
-    if (chance(0.15)) continue
+    if (chance(0.05)) continue
 
     const wonTheDay = chance(0.72)
 
