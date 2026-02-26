@@ -14,9 +14,32 @@ export default function Today() {
   const [selectedBacklogTask, setSelectedBacklogTask] = useState('')
 
   const focusTask = tasks.find(t => t.type === 'focus')
-  const projectTasks = tasks.filter(t => t.type === 'project')
-  const otherTasks = tasks.filter(t => t.type === 'other')
+
+  // D1 — completed tasks sort to bottom
+  const projectTasks = [
+    ...tasks.filter(t => t.type === 'project' && !t.is_done),
+    ...tasks.filter(t => t.type === 'project' && t.is_done),
+  ]
+  const otherTasks = [
+    ...tasks.filter(t => t.type === 'other' && !t.is_done),
+    ...tasks.filter(t => t.type === 'other' && t.is_done),
+  ]
+
   const focusDone = focusTask?.is_done
+
+  // D2 — filter out tasks already added to today
+  // E1 — group remaining backlog by project
+  const todayProjectTitles = new Set(projectTasks.map(t => t.title))
+  const availableBacklog = projectBacklog.filter(t => !todayProjectTitles.has(t.title))
+
+  // Group by project name for E1
+  const backlogByProject = availableBacklog.reduce((acc, task) => {
+    const projectName = task.projects?.title || 'No Project'
+    if (!acc[projectName]) acc[projectName] = []
+    acc[projectName].push(task)
+    return acc
+  }, {})
+  const backlogProjectNames = Object.keys(backlogByProject).sort()
 
   const handleAddFocus = async () => {
     if (!newFocus.trim()) return
@@ -32,7 +55,7 @@ export default function Today() {
 
   const handleAddProjectTask = async () => {
     if (!selectedBacklogTask) return
-    const task = projectBacklog.find(t => t.id === selectedBacklogTask)
+    const task = availableBacklog.find(t => t.id === selectedBacklogTask)
     if (!task) return
     await addTask(task.title, 'project', task.project_id)
     setSelectedBacklogTask('')
@@ -160,7 +183,7 @@ export default function Today() {
               </span>
             </div>
 
-            {projectTasks.length === 0 && projectBacklog.length === 0 && (
+            {projectTasks.length === 0 && availableBacklog.length === 0 && (
               <div className="text-[#3A5070] text-sm italic py-2">
                 No project tasks yet — add tasks to your projects first
               </div>
@@ -189,8 +212,8 @@ export default function Today() {
               </div>
             ))}
 
-            {/* Backlog picker */}
-            {projectBacklog.length > 0 && (
+            {/* Backlog picker — D2 filtered, E1 grouped by project */}
+            {availableBacklog.length > 0 && (
               <div className="mt-3 pt-3 border-t border-[#1E3550]">
                 <div className="text-[#3A5070] text-xs mb-2">Pick from your project backlog:</div>
                 <div className="flex gap-2">
@@ -200,10 +223,14 @@ export default function Today() {
                     value={selectedBacklogTask}
                     onChange={e => setSelectedBacklogTask(e.target.value)}>
                     <option value="">Select a task...</option>
-                    {projectBacklog.map(t => (
-                      <option key={t.id} value={t.id}>
-                        {t.projects?.title} → {t.title}
-                      </option>
+                    {backlogProjectNames.map(projectName => (
+                      <optgroup key={projectName} label={projectName}>
+                        {backlogByProject[projectName].map(t => (
+                          <option key={t.id} value={t.id}>
+                            {t.title}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                   {selectedBacklogTask && (
