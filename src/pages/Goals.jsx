@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 export default function Goals() {
@@ -6,6 +7,7 @@ export default function Goals() {
   const [loading, setLoading] = useState(true)
   const [newGoal, setNewGoal] = useState('')
   const [adding, setAdding] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchGoals()
@@ -14,7 +16,6 @@ export default function Goals() {
   const fetchGoals = async () => {
     const { data: { user } } = await supabase.auth.getUser()
 
-    // Fetch goals with their projects and each project's tasks
     const { data } = await supabase
       .from('goals')
       .select('*, projects(*, project_tasks(*))')
@@ -22,7 +23,6 @@ export default function Goals() {
       .eq('is_archived', false)
       .order('created_at')
 
-    // Calculate progress for each goal from its projects
     const goalsWithProgress = (data || []).map(goal => {
       const projects = goal.projects || []
 
@@ -30,7 +30,6 @@ export default function Goals() {
         return { ...goal, calculatedProgress: 0, totalTasks: 0, doneTasks: 0 }
       }
 
-      // Gather all tasks across all linked projects
       const allTasks = projects.flatMap(p => p.project_tasks || [])
       const doneTasks = allTasks.filter(t => t.is_done).length
       const totalTasks = allTasks.length
@@ -164,7 +163,7 @@ export default function Goals() {
                     style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${color}, ${color}88)` }} />
                 </div>
 
-                {/* Linked Projects */}
+                {/* Linked Projects — clickable */}
                 {goal.projects && goal.projects.length > 0 && (
                   <div className="mb-4">
                     {goal.projects.map(p => {
@@ -172,9 +171,14 @@ export default function Goals() {
                       const pdone = ptasks.filter(t => t.is_done).length
                       const ppct = ptasks.length > 0 ? Math.round((pdone / ptasks.length) * 100) : 0
                       return (
-                        <div key={p.id} className="flex items-center gap-3 py-1.5">
+                        <div key={p.id} className="flex items-center gap-3 py-1.5 group">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#3A5070] shrink-0" />
-                          <span className="text-[#7A91B0] text-xs flex-1">{p.title}</span>
+                          {/* Clickable project name */}
+                          <span
+                            onClick={() => navigate(`/projects?expand=${p.id}`)}
+                            className="text-xs flex-1 cursor-pointer transition-colors text-[#7A91B0] hover:text-[#C8922A] underline decoration-dotted underline-offset-2">
+                            {p.title}
+                          </span>
                           <span className="text-[#3A5070] text-xs">{pdone}/{ptasks.length} tasks</span>
                           <div className="w-16 h-1 bg-[#132035] rounded-full">
                             <div className="h-1 rounded-full" style={{ width: `${ppct}%`, background: color }} />

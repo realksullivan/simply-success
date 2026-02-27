@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 const QUARTERS = ['Q1 2026', 'Q2 2026', 'Q3 2026', 'Q4 2026']
@@ -11,8 +12,22 @@ export default function Projects() {
   const [expandedProject, setExpandedProject] = useState(null)
   const [newTaskInputs, setNewTaskInputs] = useState({})
   const [form, setForm] = useState({ title: '', quarter: 'Q1 2026', goal_id: '' })
+  const [searchParams] = useSearchParams()
 
   useEffect(() => { fetchData() }, [])
+
+  // Auto-expand project from query param (e.g. ?expand=projectId)
+  useEffect(() => {
+    const expandId = searchParams.get('expand')
+    if (expandId) {
+      setExpandedProject(expandId)
+      // Scroll to the project after a short delay to allow render
+      setTimeout(() => {
+        const el = document.getElementById(`project-${expandId}`)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 300)
+    }
+  }, [searchParams])
 
   const fetchData = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -71,33 +86,27 @@ export default function Projects() {
   }
 
   const toggleProjectTask = async (projectId, taskId, currentDone) => {
-  await supabase
-    .from('project_tasks')
-    .update({ is_done: !currentDone, completed_at: !currentDone ? new Date() : null })
-    .eq('id', taskId)
+    await supabase
+      .from('project_tasks')
+      .update({ is_done: !currentDone, completed_at: !currentDone ? new Date() : null })
+      .eq('id', taskId)
 
-  // Update local state
-  const updatedProjects = projects.map(p => {
-    if (p.id !== projectId) return p
-    const updatedTasks = p.project_tasks.map(t =>
-      t.id === taskId ? { ...t, is_done: !currentDone } : t
-    )
-    // Recalculate progress
-    const done = updatedTasks.filter(t => t.is_done).length
-    const total = updatedTasks.length
-    const newProgress = total > 0 ? Math.round((done / total) * 100) : 0
+    const updatedProjects = projects.map(p => {
+      if (p.id !== projectId) return p
+      const updatedTasks = p.project_tasks.map(t =>
+        t.id === taskId ? { ...t, is_done: !currentDone } : t
+      )
+      const done = updatedTasks.filter(t => t.is_done).length
+      const total = updatedTasks.length
+      const newProgress = total > 0 ? Math.round((done / total) * 100) : 0
 
-    // Persist progress to database
-    supabase
-      .from('projects')
-      .update({ progress: newProgress })
-      .eq('id', projectId)
+      supabase.from('projects').update({ progress: newProgress }).eq('id', projectId)
 
-    return { ...p, project_tasks: updatedTasks, progress: newProgress }
-  })
+      return { ...p, project_tasks: updatedTasks, progress: newProgress }
+    })
 
-  setProjects(updatedProjects)
-}
+    setProjects(updatedProjects)
+  }
 
   const deleteProjectTask = async (projectId, taskId) => {
     await supabase.from('project_tasks').delete().eq('id', taskId)
@@ -121,7 +130,7 @@ export default function Projects() {
   }[q] || '#C8922A')
 
   if (loading) return (
-    <div className="min-h-screen bg-[#08101E] flex items-center justify-center">
+    <div className="flex items-center justify-center h-64">
       <div className="text-[#C8922A]">Loading projects...</div>
     </div>
   )
@@ -204,7 +213,11 @@ export default function Projects() {
             const isExpanded = expandedProject === project.id
 
             return (
-              <div key={project.id} className="bg-[#0D1929] border border-[#1E3550] rounded-xl overflow-hidden">
+              <div
+                key={project.id}
+                id={`project-${project.id}`}
+                className="bg-[#0D1929] border border-[#1E3550] rounded-xl overflow-hidden transition-all"
+                style={{ borderColor: isExpanded ? `${color}44` : '' }}>
 
                 {/* Project Header */}
                 <div className="p-5">
@@ -262,36 +275,37 @@ export default function Projects() {
                       </div>
                     )}
 
-                    {tasks
-                      .sort((a, b) => a.sort_order - b.sort_order)
-                      .map((task, i) => (
-                        <div key={task.id}
-                          className={`flex items-center gap-3 py-2 ${i < tasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
-                          <div
-                            onClick={() => toggleProjectTask(project.id, task.id, task.is_done)}
-                            className="w-4 h-4 min-w-[16px] rounded cursor-pointer flex items-center justify-center text-[10px] text-black font-bold transition-all"
-                            style={{
-                              border: `2px solid ${task.is_done ? color : '#1E3550'}`,
-                              background: task.is_done ? color : 'transparent'
-                            }}>
-                            {task.is_done && '✓'}
-                          </div>
-                          <span className={`text-sm flex-1 ${task.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>
-                            {task.title}
-                          </span>
-                          <button
-                            onClick={() => deleteProjectTask(project.id, task.id)}
-                            className="text-[#3A5070] hover:text-red-400 text-xs cursor-pointer bg-transparent border-none transition-colors">
-                            ✕
-                          </button>
+                    {/* Incomplete tasks first, done at bottom */}
+                    {[
+                      ...tasks.filter(t => !t.is_done).sort((a, b) => a.sort_order - b.sort_order),
+                      ...tasks.filter(t => t.is_done).sort((a, b) => a.sort_order - b.sort_order),
+                    ].map((task, i) => (
+                      <div key={task.id}
+                        className={`flex items-center gap-3 py-2 ${i < tasks.length - 1 ? 'border-b border-[#1E3550]' : ''}`}>
+                        <div
+                          onClick={() => toggleProjectTask(project.id, task.id, task.is_done)}
+                          className="w-4 h-4 min-w-[16px] rounded cursor-pointer flex items-center justify-center text-[10px] text-black font-bold transition-all"
+                          style={{
+                            border: `2px solid ${task.is_done ? color : '#1E3550'}`,
+                            background: task.is_done ? color : 'transparent'
+                          }}>
+                          {task.is_done && '✓'}
                         </div>
-                      ))}
+                        <span className={`text-sm flex-1 ${task.is_done ? 'line-through text-[#3A5070]' : 'text-[#F4F0E8]'}`}>
+                          {task.title}
+                        </span>
+                        <button
+                          onClick={() => deleteProjectTask(project.id, task.id)}
+                          className="text-[#3A5070] hover:text-red-400 text-xs cursor-pointer bg-transparent border-none transition-colors">
+                          ✕
+                        </button>
+                      </div>
+                    ))}
 
                     {/* Add task input */}
                     <div className="flex gap-2 mt-3">
                       <input
-                        className="flex-1 bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2 text-[#F4F0E8] text-sm outline-none transition-colors"
-                        style={{ focusBorderColor: color }}
+                        className="flex-1 bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2 text-[#F4F0E8] text-sm outline-none transition-colors focus:border-[#C8922A]"
                         placeholder="Add a task to this project..."
                         value={newTaskInputs[project.id] || ''}
                         onChange={e => setNewTaskInputs(prev => ({ ...prev, [project.id]: e.target.value }))}
