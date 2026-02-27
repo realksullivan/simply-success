@@ -13,6 +13,7 @@ const NAV = [
 ]
 
 export default function Sidebar({ open, onClose, isMobile }) {
+  console.log('SIDEBAR MOUNTING', isMobile) // add this line
   const location = useLocation()
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
