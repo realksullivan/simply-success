@@ -33,31 +33,34 @@ export default function Sidebar({ open, onClose, isMobile }) {
     setUser(user)
   }
 
-  const fetchStreak = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
+ const fetchStreak = async () => {
+  const { data: { user } } = await supabase.auth.getUser()
 
-    // Build yesterday's local date string — exclude today so an
-    // in-progress day doesn't break the streak
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
 
-    const { data } = await supabase
-      .from('checklists')
-      .select('date, won_the_day')
-      .eq('user_id', user.id)
-      .lte('date', yesterdayStr)
-      .order('date', { ascending: false })
-      .limit(90)
+  console.log('Streak query — up to:', yesterdayStr)
 
-    if (!data) return
-    let count = 0
-    for (const c of data) {
-      if (c.won_the_day) count++
-      else break
-    }
-    setStreak(count)
+  const { data } = await supabase
+    .from('checklists')
+    .select('date, won_the_day')
+    .eq('user_id', user.id)
+    .lte('date', yesterdayStr)
+    .order('date', { ascending: false })
+    .limit(90)
+
+  console.log('Streak data returned:', data)
+
+  if (!data) return
+  let count = 0
+  for (const c of data) {
+    if (c.won_the_day) count++
+    else break
   }
+  console.log('Streak count:', count)
+  setStreak(count)
+}
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
