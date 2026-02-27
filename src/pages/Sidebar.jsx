@@ -35,14 +35,18 @@ export default function Sidebar({ open, onClose, isMobile }) {
 
  const fetchStreak = async () => {
   const { data: { user } } = await supabase.auth.getUser()
+  console.log('USER ID:', user.id)
 
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)
-  const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+  const yesterdayStr = [
+    yesterday.getFullYear(),
+    String(yesterday.getMonth() + 1).padStart(2, '0'),
+    String(yesterday.getDate()).padStart(2, '0')
+  ].join('-')
+  console.log('YESTERDAY:', yesterdayStr)
 
-  console.log('Streak query — up to:', yesterdayStr)
-
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('checklists')
     .select('date, won_the_day')
     .eq('user_id', user.id)
@@ -50,18 +54,18 @@ export default function Sidebar({ open, onClose, isMobile }) {
     .order('date', { ascending: false })
     .limit(90)
 
-  console.log('Streak data returned:', data)
+  console.log('DATA:', data)
+  console.log('ERROR:', error)
 
-  if (!data) return
+  if (!data || data.length === 0) return
   let count = 0
   for (const c of data) {
     if (c.won_the_day) count++
     else break
   }
-  console.log('Streak count:', count)
+  console.log('STREAK:', count)
   setStreak(count)
 }
-
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
@@ -108,14 +112,13 @@ export default function Sidebar({ open, onClose, isMobile }) {
           const active = location.pathname === n.path
           return (
             <button key={n.path} onClick={() => navigate(n.path)}
-              style={{
-                width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-                padding: '10px 12px', borderRadius: 8, marginBottom: 2,
-                background: active ? 'rgba(200,146,42,0.1)' : 'transparent',
-                borderLeft: active ? '2px solid #C8922A' : '2px solid transparent',
-                cursor: 'pointer', border: 'none',
-                borderLeft: active ? '2px solid #C8922A' : '2px solid transparent',
-              }}>
+             style={{
+  width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+  padding: '10px 12px', borderRadius: 8, marginBottom: 2,
+  background: active ? 'rgba(200,146,42,0.1)' : 'transparent',
+  borderLeft: active ? '2px solid #C8922A' : '2px solid transparent',
+  cursor: 'pointer', border: 'none',
+}}>
               <span style={{ color: active ? '#C8922A' : '#3A5070', fontSize: 13, width: 16, textAlign: 'center' }}>
                 {n.icon}
               </span>
