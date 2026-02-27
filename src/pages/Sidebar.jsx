@@ -8,10 +8,11 @@ const NAV = [
   { path: '/projects',   icon: '◈', label: 'Projects' },
   { path: '/reflection', icon: '◐', label: 'Reflect' },
   { path: '/analytics',  icon: '⬡', label: 'Insights' },
+  { path: '/pricing',    icon: '★', label: 'Upgrade' },
   { path: '/settings',   icon: '⊕', label: 'Settings' },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ open, onClose, isMobile }) {
   const location = useLocation()
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
@@ -22,6 +23,11 @@ export default function Sidebar() {
     fetchStreak()
   }, [])
 
+  // Close sidebar on route change on mobile
+  useEffect(() => {
+    onClose?.()
+  }, [location.pathname])
+
   const fetchUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
     setUser(user)
@@ -29,12 +35,20 @@ export default function Sidebar() {
 
   const fetchStreak = async () => {
     const { data: { user } } = await supabase.auth.getUser()
+
+    // Build yesterday's local date string — exclude today so an
+    // in-progress day doesn't break the streak
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+
     const { data } = await supabase
       .from('checklists')
       .select('date, won_the_day')
       .eq('user_id', user.id)
+      .lte('date', yesterdayStr)
       .order('date', { ascending: false })
-      .limit(30)
+      .limit(90)
 
     if (!data) return
     let count = 0
@@ -55,48 +69,54 @@ export default function Sidebar() {
 
   const today = new Date()
 
-  return (
-    <div className="w-52 min-h-screen bg-[#0D1929] border-r border-[#1E3550] flex flex-col flex-shrink-0">
+  const sidebarContent = (
+    <div style={{ width: 208, height: '100%', background: '#0D1929', borderRight: '1px solid #1E3550', display: 'flex', flexDirection: 'column' }}>
 
       {/* Logo */}
-      <div className="px-5 py-6 border-b border-[#1E3550]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base font-black text-black flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #C8922A, #7A5010)' }}>
-            S
-          </div>
+      <div style={{ padding: '24px 20px', borderBottom: '1px solid #1E3550' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 8,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 14, fontWeight: 900, color: 'black', flexShrink: 0,
+            background: 'linear-gradient(135deg, #C8922A, #7A5010)',
+          }}>S</div>
           <div>
-            <div className="text-[#F4F0E8] text-sm font-bold leading-tight">Simply</div>
-            <div className="text-[#C8922A] text-xs tracking-widest uppercase leading-tight">Success</div>
+            <div style={{ color: '#F4F0E8', fontSize: 14, fontWeight: 700, lineHeight: 1.2 }}>Simply</div>
+            <div style={{ color: '#C8922A', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', lineHeight: 1.2 }}>Success</div>
           </div>
         </div>
       </div>
 
       {/* Date */}
-      <div className="px-5 py-4 border-b border-[#1E3550]">
-        <div className="text-[#C8922A] text-xs font-medium">
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid #1E3550' }}>
+        <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 500 }}>
           {today.toLocaleDateString('en-US', { weekday: 'long' })}
         </div>
-        <div className="text-[#F4F0E8] text-xl font-bold leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
+        <div style={{ color: '#F4F0E8', fontSize: 20, fontWeight: 700, lineHeight: 1.2, fontFamily: 'Georgia, serif' }}>
           {today.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
         </div>
-        <div className="text-[#3A5070] text-xs">{today.getFullYear()}</div>
+        <div style={{ color: '#3A5070', fontSize: 11 }}>{today.getFullYear()}</div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-2 py-3">
+      <nav style={{ flex: 1, padding: '12px 8px' }}>
         {NAV.map(n => {
           const active = location.pathname === n.path
           return (
             <button key={n.path} onClick={() => navigate(n.path)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg mb-0.5 text-left cursor-pointer transition-all border-l-2
-                ${active
-                  ? 'bg-[#C8922A]/10 border-[#C8922A]'
-                  : 'bg-transparent border-transparent hover:bg-[#132035]'}`}>
-              <span className={`text-sm w-4 text-center ${active ? 'text-[#C8922A]' : 'text-[#3A5070]'}`}>
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+                padding: '10px 12px', borderRadius: 8, marginBottom: 2,
+                background: active ? 'rgba(200,146,42,0.1)' : 'transparent',
+                borderLeft: active ? '2px solid #C8922A' : '2px solid transparent',
+                cursor: 'pointer', border: 'none',
+                borderLeft: active ? '2px solid #C8922A' : '2px solid transparent',
+              }}>
+              <span style={{ color: active ? '#C8922A' : '#3A5070', fontSize: 13, width: 16, textAlign: 'center' }}>
                 {n.icon}
               </span>
-              <span className={`text-sm ${active ? 'text-[#F4F0E8] font-semibold' : 'text-[#7A91B0]'}`}>
+              <span style={{ color: active ? '#F4F0E8' : '#7A91B0', fontSize: 13, fontWeight: active ? 600 : 400 }}>
                 {n.label}
               </span>
             </button>
@@ -105,32 +125,71 @@ export default function Sidebar() {
       </nav>
 
       {/* Streak */}
-      <div className="mx-3 mb-3 bg-[#132035] rounded-lg p-3 border border-[#1E3550]">
-        <div className="text-[#3A5070] text-xs uppercase tracking-widest mb-1">Win Streak</div>
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-[#C8922A] text-2xl font-bold" style={{ fontFamily: 'Georgia, serif' }}>
+      <div style={{ margin: '0 12px 12px', background: '#132035', borderRadius: 8, padding: 12, border: '1px solid #1E3550' }}>
+        <div style={{ color: '#3A5070', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Win Streak</div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+          <span style={{ color: '#C8922A', fontSize: 24, fontWeight: 700, fontFamily: 'Georgia, serif' }}>
             {streak}
           </span>
-          <span className="text-[#C8922A] text-sm">days {streak > 0 ? '🔥' : ''}</span>
+          <span style={{ color: '#C8922A', fontSize: 13 }}>days {streak > 0 ? '🔥' : ''}</span>
         </div>
       </div>
 
       {/* User */}
-      <div className="px-4 py-3 border-t border-[#1E3550] flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-black flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #C8922A, #7A5010)' }}>
+      <div style={{ padding: '12px 16px', borderTop: '1px solid #1E3550', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: '50%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 11, fontWeight: 700, color: 'black', flexShrink: 0,
+          background: 'linear-gradient(135deg, #C8922A, #7A5010)',
+        }}>
           {initials}
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[#F4F0E8] text-xs font-medium truncate">
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ color: '#F4F0E8', fontSize: 11, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
           </div>
           <button onClick={handleLogout}
-            className="text-[#3A5070] text-xs hover:text-red-400 transition-colors cursor-pointer bg-transparent border-none p-0">
+            style={{ color: '#3A5070', fontSize: 11, cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}>
             Sign out
           </button>
         </div>
       </div>
     </div>
+  )
+
+  return (
+    <>
+      {/* Desktop sidebar — always visible */}
+      {!isMobile && (
+        <div style={{ width: 208, minHeight: '100vh', position: 'sticky', top: 0, flexShrink: 0 }}>
+          {sidebarContent}
+        </div>
+      )}
+
+      {/* Mobile overlay */}
+      {isMobile && open && (
+        <>
+          <div
+            onClick={onClose}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 40 }}
+          />
+          <div style={{
+            position: 'fixed', top: 0, left: 0,
+            height: '100%', zIndex: 50,
+            animation: 'slideIn 0.25s ease'
+          }}>
+            {sidebarContent}
+          </div>
+        </>
+      )}
+
+      <style>{`
+        @keyframes slideIn {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+      `}</style>
+    </>
   )
 }
