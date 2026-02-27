@@ -32,24 +32,30 @@ export default function Sidebar({ open, onClose, isMobile }) {
     setUser(user)
   }
 
-  const fetchStreak = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    const { data } = await supabase
-      .from('checklists')
-      .select('date, won_the_day')
-      .eq('user_id', user.id)
-      .order('date', { ascending: false })
-      .limit(30)
+const fetchStreak = async () => {
+  const { data: { user } } = await supabase.auth.getUser()
 
-    if (!data) return
-    let count = 0
-    for (const c of data) {
-      if (c.won_the_day) count++
-      else break
-    }
-    setStreak(count)
+  const { data } = await supabase
+    .from('checklists')
+    .select('date, won_the_day')
+    .eq('user_id', user.id)
+    .order('date', { ascending: false })
+    .limit(90)
+
+  if (!data || data.length === 0) return
+
+  // Filter out today in JS using local date
+  const now = new Date()
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  const pastDays = data.filter(c => c.date !== todayStr)
+
+  let count = 0
+  for (const c of pastDays) {
+    if (c.won_the_day) count++
+    else break
   }
-
+  setStreak(count)
+}
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
