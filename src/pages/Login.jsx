@@ -48,11 +48,11 @@ export default function Login() {
         <div className="flex items-center gap-3 mb-8">
           <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl font-black text-black"
             style={{ background: 'linear-gradient(135deg, #C8922A, #7A5010)' }}>
-            S
+            W
           </div>
           <div>
-            <div className="text-[#F4F0E8] text-lg font-bold">Simply Success</div>
-            <div className="text-[#7A91B0] text-xs">Your daily success system</div>
+            <div className="text-[#F4F0E8] text-lg font-bold">WinForge</div>
+            <div className="text-[#7A91B0] text-xs">Forge your winning days</div>
           </div>
         </div>
 

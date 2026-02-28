@@ -74,11 +74,11 @@ const fetchStreak = async () => {
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base font-black text-black flex-shrink-0"
             style={{ background: 'linear-gradient(135deg, #C8922A, #7A5010)' }}>
-            S
+            W
           </div>
           <div>
-            <div className="text-[#F4F0E8] text-sm font-bold leading-tight">Simply</div>
-            <div className="text-[#C8922A] text-xs tracking-widest uppercase leading-tight">Success</div>
+            <div className="text-[#F4F0E8] text-sm font-bold leading-tight">WinForge</div>
+            <div style={{ color: '#C8922A', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', lineHeight: 1.2, whiteSpace: 'nowrap' }}>Forge your wins</div>
           </div>
         </div>
       </div>

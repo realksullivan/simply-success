@@ -13,7 +13,6 @@ const NAV = [
 ]
 
 export default function Sidebar({ open, onClose, isMobile }) {
-  console.log('SIDEBAR MOUNTING', isMobile) // add this line
   const location = useLocation()
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
@@ -24,7 +23,6 @@ export default function Sidebar({ open, onClose, isMobile }) {
     fetchStreak()
   }, [])
 
-  // Close sidebar on route change on mobile
   useEffect(() => {
     onClose?.()
   }, [location.pathname])
@@ -34,39 +32,30 @@ export default function Sidebar({ open, onClose, isMobile }) {
     setUser(user)
   }
 
- const fetchStreak = async () => {
-  const { data: { user } } = await supabase.auth.getUser()
-  console.log('USER ID:', user.id)
+  const fetchStreak = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
 
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
-  const yesterdayStr = [
-    yesterday.getFullYear(),
-    String(yesterday.getMonth() + 1).padStart(2, '0'),
-    String(yesterday.getDate()).padStart(2, '0')
-  ].join('-')
-  console.log('YESTERDAY:', yesterdayStr)
+    const { data } = await supabase
+      .from('checklists')
+      .select('date, won_the_day')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
+      .limit(90)
 
-  const { data, error } = await supabase
-    .from('checklists')
-    .select('date, won_the_day')
-    .eq('user_id', user.id)
-    .lte('date', yesterdayStr)
-    .order('date', { ascending: false })
-    .limit(90)
+    if (!data || data.length === 0) return
 
-  console.log('DATA:', data)
-  console.log('ERROR:', error)
+    const now = new Date()
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    const pastDays = data.filter(c => c.date !== todayStr)
 
-  if (!data || data.length === 0) return
-  let count = 0
-  for (const c of data) {
-    if (c.won_the_day) count++
-    else break
+    let count = 0
+    for (const c of pastDays) {
+      if (c.won_the_day) count++
+      else break
+    }
+    setStreak(count)
   }
-  console.log('STREAK:', count)
-  setStreak(count)
-}
+
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
@@ -88,10 +77,10 @@ export default function Sidebar({ open, onClose, isMobile }) {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 14, fontWeight: 900, color: 'black', flexShrink: 0,
             background: 'linear-gradient(135deg, #C8922A, #7A5010)',
-          }}>S</div>
+          }}>W</div>
           <div>
-            <div style={{ color: '#F4F0E8', fontSize: 14, fontWeight: 700, lineHeight: 1.2 }}>Simply</div>
-            <div style={{ color: '#C8922A', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', lineHeight: 1.2 }}>Success</div>
+            <div style={{ color: '#F4F0E8', fontSize: 14, fontWeight: 700, lineHeight: 1.2 }}>WinForge</div>
+            <div style={{ color: '#C8922A', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1.2 }}>Forge your wins</div>
           </div>
         </div>
       </div>
@@ -113,13 +102,14 @@ export default function Sidebar({ open, onClose, isMobile }) {
           const active = location.pathname === n.path
           return (
             <button key={n.path} onClick={() => navigate(n.path)}
-             style={{
-  width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-  padding: '10px 12px', borderRadius: 8, marginBottom: 2,
-  background: active ? 'rgba(200,146,42,0.1)' : 'transparent',
-  borderLeft: active ? '2px solid #C8922A' : '2px solid transparent',
-  cursor: 'pointer', border: 'none',
-}}>
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+                padding: '10px 12px', borderRadius: 8, marginBottom: 2,
+                background: active ? 'rgba(200,146,42,0.1)' : 'transparent',
+                borderLeft: active ? '2px solid #C8922A' : '2px solid transparent',
+                borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+                cursor: 'pointer', outline: 'none',
+              }}>
               <span style={{ color: active ? '#C8922A' : '#3A5070', fontSize: 13, width: 16, textAlign: 'center' }}>
                 {n.icon}
               </span>
@@ -167,14 +157,12 @@ export default function Sidebar({ open, onClose, isMobile }) {
 
   return (
     <>
-      {/* Desktop sidebar — always visible */}
       {!isMobile && (
         <div style={{ width: 208, minHeight: '100vh', position: 'sticky', top: 0, flexShrink: 0 }}>
           {sidebarContent}
         </div>
       )}
 
-      {/* Mobile overlay */}
       {isMobile && open && (
         <>
           <div
