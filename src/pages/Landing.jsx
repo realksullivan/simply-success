@@ -1,62 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const FEATURES = [
-  {
-    icon: '⬡',
-    title: 'Focus Hour',
-    description: 'One task. Full attention. The single most important thing you can do today — locked in before anything else.',
-    color: '#C8922A',
-  },
-  {
-    icon: '◆',
-    title: 'Project Tasks',
-    description: 'Pull from your project backlog and work on what actually moves the needle — not just what feels urgent.',
-    color: '#5080D0',
-  },
-  {
-    icon: '◐',
-    title: 'Daily Habits',
-    description: 'Track the non-negotiables that compound over time. Meditate, read, exercise — every single day.',
-    color: '#1A8A5A',
-  },
-  {
-    icon: '◎',
-    title: 'Evening Reflection',
-    description: 'Five guided prompts each evening. What you learned, what you\'re proud of, what you\'ll do differently.',
-    color: '#A060C0',
-  },
-  {
-    icon: '◈',
-    title: 'Goal Tracking',
-    description: 'Set up to 5 annual goals. Break them into quarterly projects. Watch progress calculate automatically.',
-    color: '#D4840A',
-  },
-  {
-    icon: '⬡',
-    title: 'Win Insights',
-    description: 'See your win rate, habit heatmap, and streak data. Know exactly where your days are being won or lost.',
-    color: '#C8922A',
-  },
-]
-
-const HOW_IT_WORKS = [
-  {
-    step: '01',
-    title: 'Set Your Vision',
-    description: 'Define up to 5 annual goals. Break each one into quarterly projects with specific tasks.',
-  },
-  {
-    step: '02',
-    title: 'Forge Each Day',
-    description: 'Every morning, set your focus task, pick 3 project tasks, and check off your daily habits.',
-  },
-  {
-    step: '03',
-    title: 'Reflect & Compound',
-    description: 'Each evening, answer 5 reflection prompts. Watch your win rate climb week over week.',
-  },
-]
 
 const TESTIMONIALS = [
   {
@@ -107,15 +50,16 @@ export default function Landing() {
         .gold-btn { transition: opacity 0.2s, transform 0.2s; }
         .ghost-btn:hover { border-color: #C8922A; color: #C8922A; }
         .ghost-btn { transition: border-color 0.2s, color 0.2s; }
-        .feature-card:hover { border-color: #2A4A72; transform: translateY(-2px); }
-        .feature-card { transition: border-color 0.2s, transform 0.2s; }
         .nav-link:hover { color: #C8922A; }
         .nav-link { transition: color 0.2s; }
+        .system-card:hover { border-color: #2A4A72; transform: translateY(-2px); }
+        .system-card { transition: border-color 0.2s, transform 0.25s; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
         @keyframes pulse-gold { 0%, 100% { box-shadow: 0 0 0 0 rgba(200,146,42,0.3); } 50% { box-shadow: 0 0 0 12px rgba(200,146,42,0); } }
         .float { animation: float 4s ease-in-out infinite; }
         .pulse-gold { animation: pulse-gold 2s ease-in-out infinite; }
         .grain { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); z-index: 999; }
+        .connector-line { position: absolute; top: 50%; left: 100%; width: 40px; height: 2px; background: linear-gradient(90deg, #C8922A44, transparent); }
       `}</style>
 
       <div className="grain" />
@@ -139,8 +83,8 @@ export default function Landing() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          {['Features', 'How It Works', 'Pricing'].map(l => (
-            <a key={l} href={`#${l.toLowerCase().replace(/ /g, '-')}`}
+          {[['The System', '#system'], ['How It Works', '#how-it-works'], ['Pricing', '#pricing']].map(([l, href]) => (
+            <a key={l} href={href}
               className="nav-link"
               style={{ color: '#7A91B0', fontSize: 13, textDecoration: 'none', fontWeight: 500 }}>
               {l}
@@ -177,9 +121,7 @@ export default function Landing() {
         </h1>
 
         <p className="fade-in delay-2" style={{ fontSize: 18, color: '#7A91B0', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 48px', fontWeight: 400 }}>
-          WinForge is the daily operating system for high performers.
-          Set goals, execute projects, track habits, reflect each evening —
-          and measure your win rate over time.
+          WinForge connects your annual goals to your daily actions — so every task you complete is a step toward something that actually matters.
         </p>
 
         <div className="fade-in delay-3" style={{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 64, flexWrap: 'wrap' }}>
@@ -189,7 +131,7 @@ export default function Landing() {
           </button>
           <button className="ghost-btn"
             style={{ background: 'transparent', border: '1px solid #1E3550', color: '#7A91B0', padding: '14px 32px', borderRadius: 10, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit' }}
-            onClick={() => document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' })}>
+            onClick={() => document.getElementById('system').scrollIntoView({ behavior: 'smooth' })}>
             See How It Works
           </button>
         </div>
@@ -209,7 +151,7 @@ export default function Landing() {
             <div style={{ borderRight: '1px solid #1E3550', padding: '20px 12px' }}>
               <div style={{ marginBottom: 20, padding: '0 8px' }}>
                 <div style={{ color: '#C8922A', fontSize: 10, fontWeight: 600, marginBottom: 2 }}>MONDAY</div>
-                <div style={{ color: '#F4F0E8', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia, serif' }}>Feb 23</div>
+                <div style={{ color: '#F4F0E8', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia, serif' }}>Feb 28</div>
               </div>
               {[
                 { icon: '◆', label: 'Today', active: true },
@@ -278,50 +220,230 @@ export default function Landing() {
         ))}
       </section>
 
-      {/* How it works */}
-      <section id="how-it-works" style={{ padding: '100px 40px', maxWidth: 1000, margin: '0 auto' }}>
-        <div className="fade-in" style={{ textAlign: 'center', marginBottom: 64 }}>
-          <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>The System</div>
-          <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, margin: 0 }}>How It Works</h2>
+      {/* ─── THE SYSTEM ─── */}
+      <section id="system" style={{ padding: '100px 40px', maxWidth: 1100, margin: '0 auto' }}>
+
+        <div className="fade-in" style={{ textAlign: 'center', marginBottom: 72 }}>
+          <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>The WinForge System</div>
+          <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, margin: '0 auto 16px', maxWidth: 640 }}>
+            Every action connects to a goal
+          </h2>
+          <p style={{ color: '#7A91B0', fontSize: 16, maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
+            Most productivity tools help you manage tasks. WinForge helps you win. Here's how the system works.
+          </p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 32 }}>
-          {HOW_IT_WORKS.map((step, i) => (
-            <div key={i} className={`fade-in delay-${i + 1}`} style={{ position: 'relative', padding: '32px 28px', background: '#0D1929', border: '1px solid #1E3550', borderRadius: 16 }}>
-              <div style={{ fontSize: 64, fontWeight: 700, color: 'rgba(200,146,42,0.08)', fontFamily: 'Georgia, serif', lineHeight: 1, marginBottom: 16 }}>{step.step}</div>
-              <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Step {step.step}</div>
-              <div style={{ color: '#F4F0E8', fontSize: 18, fontWeight: 600, marginBottom: 12, fontFamily: 'Georgia, serif' }}>{step.title}</div>
-              <div style={{ color: '#7A91B0', fontSize: 14, lineHeight: 1.7 }}>{step.description}</div>
+
+        {/* Goals → Projects → Tasks flow */}
+        <div className="fade-in" style={{ marginBottom: 80 }}>
+          <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 24, textAlign: 'center' }}>
+            The Hierarchy
+          </div>
+
+          {/* Flow diagram */}
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: 0, maxWidth: 900, margin: '0 auto', position: 'relative' }}>
+
+            {/* Goals */}
+            <div style={{ flex: 1, background: '#0D1929', border: '1px solid #1E3550', borderRadius: '16px 0 0 16px', padding: '32px 28px', borderRight: 'none' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 10, background: 'rgba(200,146,42,0.15)', marginBottom: 16 }}>
+                <span style={{ color: '#C8922A', fontSize: 20 }}>◎</span>
+              </div>
+              <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Annual Goals</div>
+              <div style={{ color: '#F4F0E8', fontSize: 17, fontWeight: 600, marginBottom: 12, fontFamily: 'Georgia, serif' }}>Where you're headed</div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+                Set up to 5 big goals for the year. These are your north stars — the outcomes that actually matter. Everything else in WinForge exists to serve these.
+              </div>
+              <div style={{ background: '#08101E', border: '1px solid #1E3550', borderRadius: 10, padding: '12px 14px' }}>
+                <div style={{ color: '#3A5070', fontSize: 10, marginBottom: 6 }}>Example goal</div>
+                <div style={{ color: '#F4F0E8', fontSize: 12 }}>Launch SaaS and reach $5k MRR</div>
+              </div>
             </div>
-          ))}
+
+            {/* Arrow */}
+            <div style={{ display: 'flex', alignItems: 'center', background: '#0D1929', borderTop: '1px solid #1E3550', borderBottom: '1px solid #1E3550', padding: '0 4px' }}>
+              <div style={{ color: '#C8922A', fontSize: 20, opacity: 0.5 }}>→</div>
+            </div>
+
+            {/* Projects */}
+            <div style={{ flex: 1, background: '#0D1929', border: '1px solid #1E3550', padding: '32px 28px', borderLeft: 'none', borderRight: 'none' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 10, background: 'rgba(80,128,208,0.15)', marginBottom: 16 }}>
+                <span style={{ color: '#5080D0', fontSize: 20 }}>◈</span>
+              </div>
+              <div style={{ color: '#5080D0', fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Quarterly Projects</div>
+              <div style={{ color: '#F4F0E8', fontSize: 17, fontWeight: 600, marginBottom: 12, fontFamily: 'Georgia, serif' }}>How you'll get there</div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+                Break each goal into 90-day projects. A project is a focused sprint with a clear deliverable. Each project has a backlog of tasks you want to complete.
+              </div>
+              <div style={{ background: '#08101E', border: '1px solid #1E3550', borderRadius: 10, padding: '12px 14px' }}>
+                <div style={{ color: '#3A5070', fontSize: 10, marginBottom: 6 }}>Example project · Q1 2026</div>
+                <div style={{ color: '#F4F0E8', fontSize: 12 }}>Build MVP and launch beta</div>
+              </div>
+            </div>
+
+            {/* Arrow */}
+            <div style={{ display: 'flex', alignItems: 'center', background: '#0D1929', borderTop: '1px solid #1E3550', borderBottom: '1px solid #1E3550', padding: '0 4px' }}>
+              <div style={{ color: '#C8922A', fontSize: 20, opacity: 0.5 }}>→</div>
+            </div>
+
+            {/* Tasks */}
+            <div style={{ flex: 1, background: '#0D1929', border: '1px solid #1E3550', borderRadius: '0 16px 16px 0', padding: '32px 28px', borderLeft: 'none' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 10, background: 'rgba(26,138,90,0.15)', marginBottom: 16 }}>
+                <span style={{ color: '#1A8A5A', fontSize: 20 }}>✓</span>
+              </div>
+              <div style={{ color: '#1A8A5A', fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Daily Tasks</div>
+              <div style={{ color: '#F4F0E8', fontSize: 17, fontWeight: 600, marginBottom: 12, fontFamily: 'Georgia, serif' }}>What you do today</div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+                Each morning, pull up to 3 tasks from your project backlog into Today's checklist. Complete them to advance your projects — and your goals.
+              </div>
+              <div style={{ background: '#08101E', border: '1px solid #1E3550', borderRadius: 10, padding: '12px 14px' }}>
+                <div style={{ color: '#3A5070', fontSize: 10, marginBottom: 6 }}>Example task · today</div>
+                <div style={{ color: '#F4F0E8', fontSize: 12 }}>Set up Stripe payment flow</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <span style={{ color: '#3A5070', fontSize: 13 }}>
+              Goal progress updates automatically as you complete tasks.
+            </span>
+          </div>
+        </div>
+
+        {/* Daily Checklist: Focus Hour, Habits, Win The Day */}
+        <div className="fade-in" style={{ marginBottom: 16 }}>
+          <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 24, textAlign: 'center' }}>
+            Today's Checklist
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+
+            {/* Focus Hour */}
+            <div className="system-card" style={{ background: '#0D1929', border: '1px solid #1E3550', borderTop: '3px solid #C8922A', borderRadius: 14, padding: '28px 24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(200,146,42,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#C8922A', flexShrink: 0 }}>⬡</div>
+                <div>
+                  <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>Focus Hour</div>
+                  <div style={{ color: '#F4F0E8', fontSize: 16, fontWeight: 600 }}>One task. Full attention.</div>
+                </div>
+              </div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+                Every morning, you set <strong style={{ color: '#F4F0E8' }}>one most-important task</strong> for the day — your Focus Hour. It's highlighted at the top of your checklist, separate from everything else.
+              </div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+                Completing your Focus Hour task is what <strong style={{ color: '#F4F0E8' }}>unlocks "Won The Day"</strong>. This one choice forces you to identify and protect what actually matters.
+              </div>
+              <div style={{ background: '#132035', border: '1px solid #1E3550', borderLeft: '3px solid #C8922A', borderRadius: 8, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 14, height: 14, borderRadius: 3, background: '#C8922A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: 'black', fontWeight: 700 }}>✓</div>
+                <span style={{ color: '#7A91B0', fontSize: 12, textDecoration: 'line-through' }}>Ship the analytics dashboard</span>
+              </div>
+            </div>
+
+            {/* Daily Habits */}
+            <div className="system-card" style={{ background: '#0D1929', border: '1px solid #1E3550', borderTop: '3px solid #1A8A5A', borderRadius: 14, padding: '28px 24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(26,138,90,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#1A8A5A', flexShrink: 0 }}>◐</div>
+                <div>
+                  <div style={{ color: '#1A8A5A', fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>Daily Habits</div>
+                  <div style={{ color: '#F4F0E8', fontSize: 16, fontWeight: 600 }}>The reps that compound.</div>
+                </div>
+              </div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+                Set up to 5 daily habits — the non-negotiables that build long-term success. Meditation, exercise, reading, journaling. They live on your daily checklist every single day.
+              </div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+                Your Analytics page tracks <strong style={{ color: '#F4F0E8' }}>completion rate per habit</strong> over time. You can see exactly which habits are sticking and which ones aren't.
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {['Morning meditation', 'Exercise / workout', 'Deep reading 30 min'].map((h, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ width: 14, height: 14, borderRadius: 3, background: i < 2 ? '#1A8A5A' : 'transparent', border: `1.5px solid ${i < 2 ? '#1A8A5A' : '#1E3550'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: 'white', fontWeight: 700, flexShrink: 0 }}>{i < 2 && '✓'}</div>
+                    <span style={{ color: i < 2 ? '#3A5070' : '#F4F0E8', fontSize: 12, textDecoration: i < 2 ? 'line-through' : 'none' }}>{h}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Won The Day */}
+            <div className="system-card" style={{ background: '#0D1929', border: '1px solid #1E3550', borderTop: '3px solid #D4840A', borderRadius: 14, padding: '28px 24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(212,132,10,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>🏆</div>
+                <div>
+                  <div style={{ color: '#D4840A', fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>Won The Day</div>
+                  <div style={{ color: '#F4F0E8', fontSize: 16, fontWeight: 600 }}>Your daily verdict.</div>
+                </div>
+              </div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+                Once you complete your Focus Hour task, you can declare <strong style={{ color: '#F4F0E8' }}>"I Won The Day"</strong>. It's your daily close-out — a conscious decision that today was a win.
+              </div>
+              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+                Each win is logged. Your <strong style={{ color: '#F4F0E8' }}>Win Rate</strong> and <strong style={{ color: '#F4F0E8' }}>Win Streak</strong> are tracked in Analytics — the scoreboard that keeps you honest over time.
+              </div>
+              <div style={{ display: 'flex', gap: 16 }}>
+                <div style={{ flex: 1, background: '#132035', borderRadius: 8, padding: '10px', textAlign: 'center' }}>
+                  <div style={{ color: '#C8922A', fontSize: 22, fontWeight: 700, fontFamily: 'Georgia, serif' }}>78%</div>
+                  <div style={{ color: '#3A5070', fontSize: 10, marginTop: 2 }}>Win Rate</div>
+                </div>
+                <div style={{ flex: 1, background: '#132035', borderRadius: 8, padding: '10px', textAlign: 'center' }}>
+                  <div style={{ color: '#C8922A', fontSize: 22, fontWeight: 700, fontFamily: 'Georgia, serif' }}>12🔥</div>
+                  <div style={{ color: '#3A5070', fontSize: 10, marginTop: 2 }}>Day Streak</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" style={{ padding: '80px 40px', maxWidth: 1100, margin: '0 auto' }}>
-        <div className="fade-in" style={{ textAlign: 'center', marginBottom: 64 }}>
-          <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>Everything You Need</div>
-          <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, margin: 0 }}>Built for Daily Execution</h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
-          {FEATURES.map((f, i) => (
-            <div key={i} className={`fade-in feature-card delay-${(i % 3) + 1}`} style={{ padding: '28px 24px', background: '#0D1929', border: '1px solid #1E3550', borderRadius: 14, borderTop: `3px solid ${f.color}` }}>
-              <div style={{ fontSize: 24, marginBottom: 12, color: f.color }}>{f.icon}</div>
-              <div style={{ color: '#F4F0E8', fontSize: 16, fontWeight: 600, marginBottom: 8 }}>{f.title}</div>
-              <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.7 }}>{f.description}</div>
-            </div>
-          ))}
+      {/* How It Works — 3 steps */}
+      <section id="how-it-works" style={{ padding: '80px 40px', background: '#0D1929', borderTop: '1px solid #1E3550', borderBottom: '1px solid #1E3550' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+          <div className="fade-in" style={{ textAlign: 'center', marginBottom: 64 }}>
+            <div style={{ color: '#C8922A', fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>Your Daily Rhythm</div>
+            <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, margin: 0 }}>How It Works</h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 32 }}>
+            {[
+              {
+                step: '01',
+                time: 'Morning',
+                title: 'Set Your Day',
+                description: 'Open WinForge and set your Focus Hour task — the one thing that makes today a win. Then pull up to 3 project tasks from your backlog.',
+                color: '#C8922A',
+              },
+              {
+                step: '02',
+                time: 'During the Day',
+                title: 'Forge Your Wins',
+                description: 'Work through your checklist. Complete your Focus Hour. Check off habits as you do them. Every completed task advances a project, which advances a goal.',
+                color: '#5080D0',
+              },
+              {
+                step: '03',
+                time: 'Evening',
+                title: 'Close It Out',
+                description: 'Click "Won The Day" to log your win. Then spend 5 minutes on your evening reflection — what you learned, what you\'re proud of, what you\'ll do differently.',
+                color: '#1A8A5A',
+              },
+            ].map((step, i) => (
+              <div key={i} className={`fade-in delay-${i + 1}`} style={{ position: 'relative', padding: '32px 28px', background: '#08101E', border: '1px solid #1E3550', borderRadius: 16 }}>
+                <div style={{ fontSize: 64, fontWeight: 700, color: 'rgba(200,146,42,0.06)', fontFamily: 'Georgia, serif', lineHeight: 1, marginBottom: 16 }}>{step.step}</div>
+                <div style={{ color: step.color, fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>{step.time}</div>
+                <div style={{ color: '#F4F0E8', fontSize: 18, fontWeight: 600, marginBottom: 12, fontFamily: 'Georgia, serif' }}>{step.title}</div>
+                <div style={{ color: '#7A91B0', fontSize: 13, lineHeight: 1.8 }}>{step.description}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section style={{ padding: '80px 40px', background: '#0D1929', borderTop: '1px solid #1E3550', borderBottom: '1px solid #1E3550' }}>
+      <section style={{ padding: '80px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div className="fade-in" style={{ textAlign: 'center', marginBottom: 48 }}>
             <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 400, margin: 0 }}>What People Are Saying</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className={`fade-in delay-${i + 1}`} style={{ background: '#08101E', border: '1px solid #1E3550', borderRadius: 14, padding: '28px 24px' }}>
+              <div key={i} className={`fade-in delay-${i + 1}`} style={{ background: '#0D1929', border: '1px solid #1E3550', borderRadius: 14, padding: '28px 24px' }}>
                 <div style={{ color: '#C8922A', fontSize: 36, lineHeight: 1, marginBottom: 12, fontFamily: 'Georgia, serif' }}>"</div>
                 <div style={{ color: '#F4F0E8', fontSize: 14, lineHeight: 1.8, marginBottom: 20, fontStyle: 'italic' }}>{t.quote}</div>
                 <div style={{ borderTop: '1px solid #1E3550', paddingTop: 16 }}>
@@ -347,7 +469,7 @@ export default function Landing() {
             <div style={{ color: '#7A91B0', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Free</div>
             <div style={{ fontSize: 48, fontWeight: 700, color: '#F4F0E8', fontFamily: 'Georgia, serif', marginBottom: 4 }}>$0</div>
             <div style={{ color: '#3A5070', fontSize: 13, marginBottom: 32 }}>Forever free</div>
-            {['1 annual goal', 'Up to 3 daily habits', 'Daily checklist', 'Evening reflection', '30 days history'].map(f => (
+            {['1 annual goal', 'Up to 3 daily habits', 'Daily checklist', 'Focus Hour', 'Won The Day tracking', 'Evening reflection', '30 days history'].map(f => (
               <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
                 <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'rgba(200,146,42,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#C8922A', fontWeight: 700, flexShrink: 0 }}>✓</div>
                 <span style={{ color: '#7A91B0', fontSize: 13 }}>{f}</span>
@@ -387,7 +509,7 @@ export default function Landing() {
         <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 400, margin: '0 auto 20px', maxWidth: 600 }}>
           Your best days are <span style={{ color: '#C8922A', fontStyle: 'italic' }}>ahead of you.</span>
         </h2>
-        <p style={{ color: '#7A91B0', fontSize: 16, marginBottom: 40, maxWidth: 420, margin: '0 auto 40px' }}>
+        <p style={{ color: '#7A91B0', fontSize: 16, maxWidth: 420, margin: '0 auto 40px' }}>
           Join thousands of people who start each morning with intention and end each evening with pride.
         </p>
         <button onClick={() => navigate('/login')} className="gold-btn"
