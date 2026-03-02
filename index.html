@@ -2,15 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="WinForge — Forge your winning days. The daily execution system for high performers." />
-    <meta property="og:title" content="WinForge" />
-    <meta property="og:description" content="Forge your winning days. Set goals, execute projects, track habits, and measure your win rate." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Primary -->
     <title>WinForge — Forge Your Winning Days</title>
+    <meta name="description" content="The daily operating system for high performers. Goals, projects, habits, and daily wins — all in one place." />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#08101E" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="WinForge" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/icons/icon-192.png" />
+
+    <!-- OG -->
+    <meta property="og:title" content="WinForge — Forge Your Winning Days" />
+    <meta property="og:description" content="The daily operating system for high performers." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://winforge.app" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Register service worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('SW registered:', reg.scope))
+            .catch(err => console.log('SW failed:', err))
+        })
+      }
+    </script>
   </body>
 </html>
