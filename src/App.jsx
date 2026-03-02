@@ -11,6 +11,8 @@ import Projects from './pages/Projects'
 import Reflection from './pages/Reflection'
 import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
+import Pricing from './pages/Pricing'
+import UpgradeSuccess from './pages/UpgradeSuccess'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -56,6 +58,8 @@ export default function App() {
         <Route path="/reflection" element={protect(<Reflection />)} />
         <Route path="/analytics"  element={protect(<Analytics />)} />
         <Route path="/settings"   element={protect(<Settings />)} />
+        <Route path="/upgrade" element={protect(<Pricing />)} />
+        <Route path="/upgrade/success" element={protect(<UpgradeSuccess />)} />
       </Routes>
     </BrowserRouter>
   )
