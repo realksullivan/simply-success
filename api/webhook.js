@@ -1,17 +1,10 @@
-import Stripe from 'stripe'
-import { createClient } from '@supabase/supabase-js'
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-)
+const Stripe = require('stripe')
+const { createClient } = require('@supabase/supabase-js')
 
 // Disable body parsing — Stripe needs raw body to verify signature
-export const config = { api: { bodyParser: false } }
+module.exports.config = { api: { bodyParser: false } }
 
-async function getRawBody(req) {
+function getRawBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = []
     req.on('data', chunk => chunks.push(chunk))
@@ -20,26 +13,16 @@ async function getRawBody(req) {
   })
 }
 
-async function markUserPro(userId, plan) {
-  const { error } = await supabase
-    .from('profiles')
-    .upsert({
-      id: userId,
-      is_pro: true,
-      plan,
-      upgraded_at: new Date().toISOString(),
-    })
-
-  if (error) {
-    console.error('Supabase error marking pro:', error)
-    throw error
-  }
-}
-
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  )
 
   const sig = req.headers['stripe-signature']
   const rawBody = await getRawBody(req)
@@ -54,7 +37,6 @@ export default async function handler(req, res) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object
-
     const userId = session.client_reference_id || session.metadata?.userId
     const plan = session.metadata?.plan || 'monthly'
 
@@ -63,13 +45,22 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'No userId found' })
     }
 
-    try {
-      await markUserPro(userId, plan)
-      console.log(`✓ User ${userId} marked as pro (${plan})`)
-    } catch (err) {
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({
+        id: userId,
+        is_pro: true,
+        plan,
+        upgraded_at: new Date().toISOString(),
+      })
+
+    if (error) {
+      console.error('Supabase error:', error)
       return res.status(500).json({ error: 'Failed to update user' })
     }
+
+    console.log(`✓ User ${userId} marked as pro (${plan})`)
   }
 
-  res.status(200).json({ received: true })
+  return res.status(200).json({ received: true })
 }
