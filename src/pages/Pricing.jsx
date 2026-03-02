@@ -2,6 +2,21 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
+const PRICES = {
+  monthly: 'price_1T6OOhEaVdXhj1grdflCCHSw',
+  lifetime: 'price_1T6ONhEaVdXhj1grGuUEK8OX',
+}
+
+const FEATURES = [
+  'Unlimited annual goals',
+  'Unlimited daily habits',
+  'Full analytics dashboard',
+  'Habit heatmap calendar',
+  'Unlimited history',
+  'Weekly email summary',
+  'Priority support',
+]
+
 export default function Pricing() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(null)
@@ -15,9 +30,7 @@ export default function Pricing() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { navigate('/login'); return }
 
-      const priceId = plan === 'lifetime'
-        ? import.meta.env.VITE_STRIPE_PRICE_LIFETIME
-        : import.meta.env.VITE_STRIPE_PRICE_MONTHLY
+      const priceId = PRICES[plan]
 
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
@@ -38,20 +51,14 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-[#08101E] flex flex-col items-center justify-center px-4 py-16">
 
-      {/* Header */}
       <div className="text-center mb-12">
-        <div className="text-[#C8922A] text-xs font-bold tracking-widest uppercase mb-3">
-          Upgrade
-        </div>
-        <h1 className="text-[#F4F0E8] text-3xl font-bold mb-3">
-          Go Pro
-        </h1>
+        <div className="text-[#C8922A] text-xs font-bold tracking-widest uppercase mb-3">Upgrade</div>
+        <h1 className="text-[#F4F0E8] text-3xl font-bold mb-3">Go Pro</h1>
         <p className="text-[#7A91B0] text-sm max-w-sm">
           Unlimited goals, habits, and full analytics. Cancel anytime.
         </p>
       </div>
 
-      {/* Plans */}
       <div className="flex flex-col md:flex-row gap-5 w-full max-w-2xl">
 
         {/* Monthly */}
@@ -129,13 +136,3 @@ export default function Pricing() {
     </div>
   )
 }
-
-const FEATURES = [
-  'Unlimited annual goals',
-  'Unlimited daily habits',
-  'Full analytics dashboard',
-  'Habit heatmap calendar',
-  'Unlimited history',
-  'Weekly email summary',
-  'Priority support',
-]
