@@ -136,7 +136,7 @@ export default function Landing() {
         <div className="fade-in delay-3" style={{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 64, flexWrap: 'wrap' }}>
           <button onClick={() => navigate('/pricing')} className="gold-btn"
             style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)', border: 'none', color: 'black', fontWeight: 700, padding: '14px 32px', borderRadius: 10, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit' }}>
-            Start Forging Free →
+            Start Forging Wins →
           </button>
           <button className="ghost-btn"
             style={{ background: 'transparent', border: '1px solid #1E3550', color: '#7A91B0', padding: '14px 32px', borderRadius: 10, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit' }}
@@ -475,7 +475,7 @@ export default function Landing() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24, alignItems: 'start' }}>
           <div className="fade-in delay-1" style={{ background: '#0D1929', border: '1px solid #1E3550', borderRadius: 16, padding: '36px 32px' }}>
-            <div style={{ color: '#7A91B0', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Free</div>
+            <div style={{ color: '#7A91B0', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Monthly</div>
             <div style={{ fontSize: 48, fontWeight: 700, color: '#F4F0E8', fontFamily: 'Georgia, serif', marginBottom: 4 }}>$0</div>
             <div style={{ color: '#3A5070', fontSize: 13, marginBottom: 32 }}>Forever free</div>
             {['1 annual goal', 'Up to 3 daily habits', 'Daily checklist', 'Focus Hour', 'Won The Day tracking', 'Evening reflection', '30 days history'].map(f => (
@@ -506,7 +506,7 @@ export default function Landing() {
             ))}
             <button onClick={() => navigate('/pricing')} className="gold-btn"
               style={{ width: '100%', marginTop: 24, background: 'linear-gradient(135deg, #C8922A, #A87020)', border: 'none', color: 'black', fontWeight: 700, padding: '13px', borderRadius: 10, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit' }}>
-              Start Pro Free Trial →
+              Get Started →
             </button>
           </div>
         </div>
@@ -523,9 +523,9 @@ export default function Landing() {
         </p>
         <button onClick={() => navigate('/pricing')} className="gold-btn"
           style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)', border: 'none', color: 'black', fontWeight: 700, padding: '16px 40px', borderRadius: 12, fontSize: 16, cursor: 'pointer', fontFamily: 'inherit' }}>
-          Start Forging Your Wins →
+          Get Started →
         </button>
-        <div style={{ color: '#3A5070', fontSize: 12, marginTop: 16 }}>Free to start. No credit card required.</div>
+        <div style={{ color: '#3A5070', fontSize: 12, marginTop: 16 }}>From $9.99/mo · Cancel anytime</div>
       </section>
 
       {/* Footer */}
