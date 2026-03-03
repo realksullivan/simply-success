@@ -60,12 +60,17 @@ export default function Landing() {
         .pulse-gold { animation: pulse-gold 2s ease-in-out infinite; }
         .grain { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); z-index: 999; }
         .connector-line { position: absolute; top: 50%; left: 100%; width: 40px; height: 2px; background: linear-gradient(90deg, #C8922A44, transparent); }
+        @media (max-width: 640px) {
+          .nav-links { display: none !important; }
+          .nav-ghost { display: none !important; }
+          .nav-pad { padding: 12px 20px !important; }
+        }
       `}</style>
 
       <div className="grain" />
 
       {/* Nav */}
-      <nav style={{
+      <nav className="nav-pad" style={{
         position: 'sticky', top: 0, zIndex: 100,
         background: 'rgba(8,16,30,0.9)', backdropFilter: 'blur(12px)',
         borderBottom: '1px solid #1E3550',
@@ -82,7 +87,7 @@ export default function Landing() {
           <div style={{ color: '#F4F0E8', fontSize: 16, fontWeight: 700 }}>WinForge</div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
           {[['The System', '#system'], ['How It Works', '#how-it-works'], ['Pricing', '#pricing']].map(([l, href]) => (
             <a key={l} href={href}
               className="nav-link"
@@ -93,7 +98,7 @@ export default function Landing() {
         </div>
 
         <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={() => navigate('/login')} className="ghost-btn"
+          <button onClick={() => navigate('/login')} className="ghost-btn nav-ghost"
             style={{ background: 'transparent', border: '1px solid #1E3550', color: '#7A91B0', padding: '8px 18px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
             Sign In
           </button>
