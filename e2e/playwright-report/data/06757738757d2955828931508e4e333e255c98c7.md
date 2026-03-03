@@ -1,0 +1,76 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e7]:
+      - generic [ref=e8]: W
+      - generic [ref=e9]:
+        - generic [ref=e10]: WinForge
+        - generic [ref=e11]: Forge your wins
+    - generic [ref=e12]:
+      - generic [ref=e13]: Monday
+      - generic [ref=e14]: March 2
+      - generic [ref=e15]: "2026"
+    - navigation [ref=e16]:
+      - button "◆ Today" [ref=e17] [cursor=pointer]:
+        - generic [ref=e18]: ◆
+        - generic [ref=e19]: Today
+      - button "◎ Goals" [ref=e20] [cursor=pointer]:
+        - generic [ref=e21]: ◎
+        - generic [ref=e22]: Goals
+      - button "◈ Projects" [ref=e23] [cursor=pointer]:
+        - generic [ref=e24]: ◈
+        - generic [ref=e25]: Projects
+      - button "◐ Reflect" [ref=e26] [cursor=pointer]:
+        - generic [ref=e27]: ◐
+        - generic [ref=e28]: Reflect
+      - button "⬡ Insights" [ref=e29] [cursor=pointer]:
+        - generic [ref=e30]: ⬡
+        - generic [ref=e31]: Insights
+      - button "⊕ Settings" [ref=e32] [cursor=pointer]:
+        - generic [ref=e33]: ⊕
+        - generic [ref=e34]: Settings
+    - generic [ref=e35]:
+      - generic [ref=e36]: Win Streak
+      - generic [ref=e37]:
+        - generic [ref=e38]: "0"
+        - generic [ref=e39]: days
+    - generic [ref=e40]:
+      - generic [ref=e41]: PL
+      - generic [ref=e42]:
+        - generic [ref=e43]: Playwright Test
+        - button "Sign out" [ref=e44] [cursor=pointer]
+  - main [ref=e46]:
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]: Quarterly Projects
+          - generic [ref=e51]: My Projects
+        - button "+ New Project" [ref=e52] [cursor=pointer]
+      - generic [ref=e53]:
+        - generic [ref=e54]: New Project
+        - generic [ref=e55]:
+          - textbox "Project title" [active] [ref=e56]
+          - generic [ref=e57]:
+            - combobox [ref=e58]:
+              - option "Q1 2026" [selected]
+              - option "Q2 2026"
+              - option "Q3 2026"
+              - option "Q4 2026"
+            - combobox [ref=e59]:
+              - option "Link to a goal (optional)" [selected]
+              - option "Launch WinForge"
+          - generic [ref=e60]:
+            - button "Save Project" [ref=e61] [cursor=pointer]
+            - button "Cancel" [ref=e62] [cursor=pointer]
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - generic [ref=e68]: Q1 2026
+          - generic [ref=e69]: 0%
+        - generic [ref=e70]: Build MVP
+        - generic [ref=e72]:
+          - button "▼ Tasks (0)" [ref=e73] [cursor=pointer]
+          - generic [ref=e74]: 0/0 complete
+          - button "✓ Complete Project" [ref=e75] [cursor=pointer]
+```

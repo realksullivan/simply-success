@@ -1,0 +1,65 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]: W
+    - generic [ref=e6]:
+      - generic [ref=e7]: WinForge
+      - generic [ref=e8]: Forge your winning days
+  - generic [ref=e9]: Get Access
+  - heading "Choose your plan" [level=1] [ref=e10]
+  - paragraph [ref=e11]: Pay once and start forging winning days.
+  - generic [ref=e12]: Server error
+  - generic [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]: Monthly
+      - generic [ref=e16]:
+        - generic [ref=e17]: $9.99
+        - generic [ref=e18]: /month
+      - generic [ref=e19]: Cancel anytime
+      - generic [ref=e20]:
+        - generic [ref=e21]: ✓
+        - generic [ref=e22]: Unlimited goals & habits
+      - generic [ref=e23]:
+        - generic [ref=e24]: ✓
+        - generic [ref=e25]: Daily focus hour system
+      - generic [ref=e26]:
+        - generic [ref=e27]: ✓
+        - generic [ref=e28]: Win the day tracking
+      - generic [ref=e29]:
+        - generic [ref=e30]: ✓
+        - generic [ref=e31]: Quarterly projects
+      - generic [ref=e32]:
+        - generic [ref=e33]: ✓
+        - generic [ref=e34]: Analytics & heatmap
+      - generic [ref=e35]:
+        - generic [ref=e36]: ✓
+        - generic [ref=e37]: Weekly email summary
+      - button "Get Monthly Access →" [ref=e38] [cursor=pointer]
+    - generic [ref=e39]:
+      - generic [ref=e40]: BEST VALUE
+      - generic [ref=e41]: Lifetime
+      - generic [ref=e43]: $59.99
+      - generic [ref=e44]: One-time payment, forever
+      - generic [ref=e45]:
+        - generic [ref=e46]: ✓
+        - generic [ref=e47]: Unlimited goals & habits
+      - generic [ref=e48]:
+        - generic [ref=e49]: ✓
+        - generic [ref=e50]: Daily focus hour system
+      - generic [ref=e51]:
+        - generic [ref=e52]: ✓
+        - generic [ref=e53]: Win the day tracking
+      - generic [ref=e54]:
+        - generic [ref=e55]: ✓
+        - generic [ref=e56]: Quarterly projects
+      - generic [ref=e57]:
+        - generic [ref=e58]: ✓
+        - generic [ref=e59]: Analytics & heatmap
+      - generic [ref=e60]:
+        - generic [ref=e61]: ✓
+        - generic [ref=e62]: Weekly email summary
+      - button "Get Lifetime Access →" [ref=e63] [cursor=pointer]
+  - generic [ref=e64]: Encrypted · Private · Ad-free · Cancel anytime
+```
