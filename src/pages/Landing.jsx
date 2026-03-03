@@ -240,10 +240,10 @@ export default function Landing() {
           </div>
 
           {/* Flow diagram */}
-          <div style={{ display: 'flex', alignItems: 'stretch', gap: 0, maxWidth: 900, margin: '0 auto', position: 'relative' }} className="hierarchy-flow">
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: 0, maxWidth: 900, margin: '0 auto', position: 'relative' }}>
 
             {/* Goals */}
-            <div style={{ flex: 1, background: '#0D1929', border: '1px solid #1E3550', borderRadius: '16px 0 0 16px', padding: '32px 28px', borderRight: 'none' }} className="hierarchy-panel-left">
+            <div style={{ flex: 1, background: '#0D1929', border: '1px solid #1E3550', borderRadius: '16px 0 0 16px', padding: '32px 28px', borderRight: 'none' }}>
               <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 10, background: 'rgba(200,146,42,0.15)', marginBottom: 16 }}>
                 <span style={{ color: '#C8922A', fontSize: 20 }}>◎</span>
               </div>
@@ -259,7 +259,7 @@ export default function Landing() {
             </div>
 
             {/* Arrow */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0D1929', borderTop: '1px solid #1E3550', borderBottom: '1px solid #1E3550', padding: '0 4px' }} className="hierarchy-arrow">
+            <div style={{ display: 'flex', alignItems: 'center', background: '#0D1929', borderTop: '1px solid #1E3550', borderBottom: '1px solid #1E3550', padding: '0 4px' }}>
               <div style={{ color: '#C8922A', fontSize: 20, opacity: 0.5 }}>→</div>
             </div>
 
@@ -280,7 +280,7 @@ export default function Landing() {
             </div>
 
             {/* Arrow */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0D1929', borderTop: '1px solid #1E3550', borderBottom: '1px solid #1E3550', padding: '0 4px' }} className="hierarchy-arrow">
+            <div style={{ display: 'flex', alignItems: 'center', background: '#0D1929', borderTop: '1px solid #1E3550', borderBottom: '1px solid #1E3550', padding: '0 4px' }}>
               <div style={{ color: '#C8922A', fontSize: 20, opacity: 0.5 }}>→</div>
             </div>
 
