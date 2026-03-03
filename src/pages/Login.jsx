@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 export default function Login() {
-  const [mode, setMode] = useState('login')
+  const [mode] = useState('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [message, setMessage] = useState(null)
@@ -59,18 +58,7 @@ export default function Login() {
         {/* Card */}
         <div className="bg-[#0D1929] border border-[#1E3550] rounded-2xl p-6 md:p-8">
 
-          {/* Toggle */}
-          <div className="flex gap-1 bg-[#132035] rounded-lg p-1 mb-6">
-            {['login', 'register'].map(m => (
-              <button key={m} onClick={() => { setMode(m); setError(null); setMessage(null) }}
-                className={`flex-1 py-2 rounded-md text-sm font-medium transition-all cursor-pointer
-                  ${mode === m
-                    ? 'bg-[#0D1929] text-[#F4F0E8] shadow font-semibold'
-                    : 'text-[#7A91B0] bg-transparent'}`}>
-                {m === 'login' ? 'Sign In' : 'Create Account'}
-              </button>
-            ))}
-          </div>
+          <h2 className="text-[#F4F0E8] text-xl font-bold mb-6">Sign In</h2>
 
           {/* Error / Success */}
           {error && (
@@ -86,17 +74,7 @@ export default function Login() {
 
           {/* Fields */}
           <div className="flex flex-col gap-4 mb-5">
-            {mode === 'register' && (
-              <div>
-                <label className="text-[#7A91B0] text-xs block mb-1.5">Full Name</label>
-                <input
-                  className="w-full bg-[#08101E] border border-[#1E3550] rounded-lg px-3 py-2.5 text-[#F4F0E8] text-sm outline-none focus:border-[#C8922A] transition-colors"
-                  placeholder="James Davis"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                />
-              </div>
-            )}
+
             <div>
               <label className="text-[#7A91B0] text-xs block mb-1.5">Email</label>
               <input
@@ -133,7 +111,7 @@ export default function Login() {
             disabled={loading}
             className="w-full py-3 rounded-lg text-sm font-bold text-black cursor-pointer transition-opacity disabled:opacity-50"
             style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)' }}>
-            {loading ? 'Please wait...' : mode === 'login' ? 'Sign In →' : 'Create Account →'}
+            {loading ? 'Please wait...' : 'Sign In →'}
           </button>
 
           {/* Divider */}

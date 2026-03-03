@@ -102,13 +102,13 @@ export default function Landing() {
         </div>
 
         <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={() => navigate('/login')} className="ghost-btn"
+          <button onClick={() => navigate('/pricing')} className="ghost-btn"
             style={{ background: 'transparent', border: '1px solid #1E3550', color: '#7A91B0', padding: '8px 18px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
             Sign In
           </button>
-          <button onClick={() => navigate('/login')} className="gold-btn pulse-gold"
+          <button onClick={() => navigate('/pricing')} className="gold-btn pulse-gold"
             style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)', border: 'none', color: 'black', fontWeight: 700, padding: '8px 18px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
-            Start Free →
+            Get Started →
           </button>
         </div>
       </nav>
@@ -134,7 +134,7 @@ export default function Landing() {
         </p>
 
         <div className="fade-in delay-3" style={{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 64, flexWrap: 'wrap' }}>
-          <button onClick={() => navigate('/login')} className="gold-btn"
+          <button onClick={() => navigate('/pricing')} className="gold-btn"
             style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)', border: 'none', color: 'black', fontWeight: 700, padding: '14px 32px', borderRadius: 10, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit' }}>
             Start Forging Free →
           </button>
@@ -484,9 +484,9 @@ export default function Landing() {
                 <span style={{ color: '#7A91B0', fontSize: 13 }}>{f}</span>
               </div>
             ))}
-            <button onClick={() => navigate('/login')} className="ghost-btn"
+            <button onClick={() => navigate('/pricing')} className="ghost-btn"
               style={{ width: '100%', marginTop: 24, background: 'transparent', border: '1px solid #1E3550', color: '#7A91B0', padding: '12px', borderRadius: 10, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600 }}>
-              Get Started Free
+              Get Started →
             </button>
           </div>
 
@@ -504,7 +504,7 @@ export default function Landing() {
                 <span style={{ color: '#F4F0E8', fontSize: 13 }}>{f}</span>
               </div>
             ))}
-            <button onClick={() => navigate('/login')} className="gold-btn"
+            <button onClick={() => navigate('/pricing')} className="gold-btn"
               style={{ width: '100%', marginTop: 24, background: 'linear-gradient(135deg, #C8922A, #A87020)', border: 'none', color: 'black', fontWeight: 700, padding: '13px', borderRadius: 10, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit' }}>
               Start Pro Free Trial →
             </button>
@@ -521,7 +521,7 @@ export default function Landing() {
         <p style={{ color: '#7A91B0', fontSize: 16, maxWidth: 420, margin: '0 auto 40px' }}>
           Join thousands of people who start each morning with intention and end each evening with pride.
         </p>
-        <button onClick={() => navigate('/login')} className="gold-btn"
+        <button onClick={() => navigate('/pricing')} className="gold-btn"
           style={{ background: 'linear-gradient(135deg, #C8922A, #A87020)', border: 'none', color: 'black', fontWeight: 700, padding: '16px 40px', borderRadius: 12, fontSize: 16, cursor: 'pointer', fontFamily: 'inherit' }}>
           Start Forging Your Wins →
         </button>

@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import AppShell from './components/layout/AppShell'
 import Login from './pages/Login'
+import Pricing from './pages/Pricing'
+import Register from './pages/Register'
 import Landing from './pages/Landing'
 import Onboarding from './pages/Onboarding'
 import Today from './pages/Today'
@@ -11,8 +13,6 @@ import Projects from './pages/Projects'
 import Reflection from './pages/Reflection'
 import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
-import Pricing from './pages/Pricing'
-import UpgradeSuccess from './pages/UpgradeSuccess'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -51,6 +51,8 @@ export default function App() {
       <Routes>
         <Route path="/"           element={session ? (onboardingComplete ? <AppShell><Today /></AppShell> : <Navigate to="/onboarding" />) : <Landing />} />
         <Route path="/login"      element={session ? <Navigate to="/" /> : <Login />} />
+        <Route path="/pricing"    element={session ? <Navigate to="/" /> : <Pricing />} />
+        <Route path="/register"   element={session ? <Navigate to="/" /> : <Register />} />
         <Route path="/onboarding" element={!session ? <Navigate to="/login" /> : onboardingComplete ? <Navigate to="/" /> : <Onboarding />} />
         <Route path="/today"      element={protect(<Today />)} />
         <Route path="/goals"      element={protect(<Goals />)} />
@@ -58,8 +60,6 @@ export default function App() {
         <Route path="/reflection" element={protect(<Reflection />)} />
         <Route path="/analytics"  element={protect(<Analytics />)} />
         <Route path="/settings"   element={protect(<Settings />)} />
-        <Route path="/upgrade" element={protect(<Pricing />)} />
-        <Route path="/upgrade/success" element={protect(<UpgradeSuccess />)} />
       </Routes>
     </BrowserRouter>
   )
