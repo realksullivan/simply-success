@@ -249,7 +249,7 @@ export default function Landing() {
           </div>
 
           {/* Flow diagram */}
-          <div style={{ display: 'flex', alignItems: 'stretch', gap: 0, maxWidth: 900, margin: '0 auto', position: 'relative' }}>
+          {!isMobile && <div style={{ display: 'flex', alignItems: 'stretch', gap: 0, maxWidth: 900, margin: '0 auto', position: 'relative' }}>
 
             {/* Goals */}
             <div style={{ flex: 1, background: '#0D1929', border: '1px solid #1E3550', borderRadius: '16px 0 0 16px', padding: '32px 28px', borderRight: 'none' }}>
@@ -308,7 +308,7 @@ export default function Landing() {
                 <div style={{ color: '#F4F0E8', fontSize: 12 }}>Set up Stripe payment flow</div>
               </div>
             </div>
-          </div>
+          </div>}
 
           <div style={{ textAlign: 'center', marginTop: 24 }}>
             <span style={{ color: '#3A5070', fontSize: 13 }}>
