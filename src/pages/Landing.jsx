@@ -102,7 +102,7 @@ export default function Landing() {
         </div>
 
         <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={() => navigate('/pricing')} className="ghost-btn"
+          <button onClick={() => navigate('/login')} className="ghost-btn"
             style={{ background: 'transparent', border: '1px solid #1E3550', color: '#7A91B0', padding: '8px 18px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
             Sign In
           </button>
