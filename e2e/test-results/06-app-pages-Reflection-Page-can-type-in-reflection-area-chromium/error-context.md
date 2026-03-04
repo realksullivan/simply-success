@@ -9,8 +9,8 @@
         - generic [ref=e10]: WinForge
         - generic [ref=e11]: Forge your wins
     - generic [ref=e12]:
-      - generic [ref=e13]: Monday
-      - generic [ref=e14]: March 2
+      - generic [ref=e13]: Tuesday
+      - generic [ref=e14]: March 3
       - generic [ref=e15]: "2026"
     - navigation [ref=e16]:
       - button "◆ Today" [ref=e17] [cursor=pointer]:

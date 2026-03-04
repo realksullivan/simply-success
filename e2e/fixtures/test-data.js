@@ -3,14 +3,14 @@
 
 const TEST_USER = {
   // Use your Gmail + addressing so all emails land in one inbox
-  email: 'ksull10+playwright@gmail.com',
+  email: 'therealkevinsullivan10+playwright@gmail.com',
   password: 'TestPassword123!',
   name: 'Playwright Test',
 }
 
 // A second user to test isolation
 const TEST_USER_2 = {
-  email: 'ksull10+playwright2@gmail.com',
+  email: 'therealkevinsullivan10+playwright2@gmail.com',
   password: 'TestPassword123!',
   name: 'Playwright Test 2',
 }
